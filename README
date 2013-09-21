@@ -69,6 +69,7 @@ unpacking the release archive "flite-1.4-release.tar.bz2":
         --enable-shared --disable-static        \
         CFLAGS='-O3'
    $ make
+   $ make info
    $ sudo make install
 
 because  we select  "alsa" as  audio API:  this package  will link  with
