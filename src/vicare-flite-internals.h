@@ -1,5 +1,5 @@
 /*
-  Part of: Vicare/Template
+  Part of: Vicare/Flite
   Contents: internal header file
   Date: Thu Feb 14, 2013
 
@@ -23,8 +23,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef VICARE_TEMPLATE_INTERNALS_H
-#define VICARE_TEMPLATE_INTERNALS_H 1
+#ifndef VICARE_FLITE_INTERNALS_H
+#define VICARE_FLITE_INTERNALS_H 1
 
 
 /** --------------------------------------------------------------------
@@ -35,22 +35,22 @@
 #  include <config.h>
 #endif
 #include <vicare.h>
-/* #include <template.h> */
+#include <flite/flite.h>
 
 
 /** --------------------------------------------------------------------
  ** Handling of Scheme objects.
  ** ----------------------------------------------------------------- */
 
-#define ika_integer_from_template_errcode(PCB,CODE)	\
+#define ika_integer_from_flite_errcode(PCB,CODE)	\
 	ika_integer_from_int((PCB),(CODE))
 /* IK_FIX(CODE) */
 
 /* Accessors for the fields of the Scheme structure "struct". */
-#define IK_TEMPLATE_STRUCT_POINTER(CONN)		IK_FIELD((CONN),0)
-#define IK_TEMPLATE_STRUCT_PATHNAME(CONN)		IK_FIELD((CONN),1)
-#define IK_TEMPLATE_CONNECTION(CONN)	\
-  IK_POINTER_DATA_VOIDP(IK_TEMPLATE_STRUCT_POINTER(CONN))
+#define IK_FLITE_STRUCT_POINTER(CONN)		IK_FIELD((CONN),0)
+#define IK_FLITE_STRUCT_PATHNAME(CONN)		IK_FIELD((CONN),1)
+#define IK_FLITE_CONNECTION(CONN)	\
+  IK_POINTER_DATA_VOIDP(IK_FLITE_STRUCT_POINTER(CONN))
 
 
 /** --------------------------------------------------------------------
@@ -60,7 +60,7 @@
 static IK_UNUSED void
 feature_failure_ (const char * funcname)
 {
-  ik_abort("called unavailable Template specific function, %s\n", funcname);
+  ik_abort("called unavailable Flite specific function, %s\n", funcname);
 }
 
 #define feature_failure(FN)     { feature_failure_(FN); return IK_VOID; }
@@ -71,6 +71,6 @@ feature_failure_ (const char * funcname)
  ** ----------------------------------------------------------------- */
 
 
-#endif /* VICARE_TEMPLATE_INTERNALS_H */
+#endif /* VICARE_FLITE_INTERNALS_H */
 
 /* end of file */

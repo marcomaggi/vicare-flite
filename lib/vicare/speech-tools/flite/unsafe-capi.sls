@@ -26,7 +26,7 @@
 
 
 #!r6rs
-(library (vicare category template unsafe-capi)
+(library (vicare speech-tools flite unsafe-capi)
   (export
 
     ;; Flite unsafe C API
@@ -40,10 +40,10 @@
     flite-voice-add-lex-addenda
 
     ;; version functions
-    vicare-template-version-interface-current
-    vicare-template-version-interface-revision
-    vicare-template-version-interface-age
-    vicare-template-version
+    vicare-flite-version-interface-current
+    vicare-flite-version-interface-revision
+    vicare-flite-version-interface-age
+    vicare-flite-version
 
 ;;; --------------------------------------------------------------------
 ;;; still to be implemented
@@ -54,17 +54,17 @@
 
 ;;;; version functions
 
-(define-inline (vicare-template-version-interface-current)
-  (foreign-call "ikrt_template_version_interface_current"))
+(define-inline (vicare-flite-version-interface-current)
+  (foreign-call "ikrt_flite_version_interface_current"))
 
-(define-inline (vicare-template-version-interface-revision)
-  (foreign-call "ikrt_template_version_interface_revision"))
+(define-inline (vicare-flite-version-interface-revision)
+  (foreign-call "ikrt_flite_version_interface_revision"))
 
-(define-inline (vicare-template-version-interface-age)
-  (foreign-call "ikrt_template_version_interface_age"))
+(define-inline (vicare-flite-version-interface-age)
+  (foreign-call "ikrt_flite_version_interface_age"))
 
-(define-inline (vicare-template-version)
-  (foreign-call "ikrt_template_version"))
+(define-inline (vicare-flite-version)
+  (foreign-call "ikrt_flite_version"))
 
 
 ;;;; Flite unsafe C API

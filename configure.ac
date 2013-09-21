@@ -41,8 +41,8 @@ AC_DEFINE([_GNU_SOURCE],[1],[enable everything GNU])
 AC_CHECK_HEADERS([flite/flite.h],,
   [AC_MSG_FAILURE([missing flite.h header],[2])])
 
-AC_CHECK_LIB([linux-vdso],[main],,
-  [AC_MSG_FAILURE([missing Linux VDSO library],[2])])
+AC_CHECK_LIB([asound],[main],,
+  [AC_MSG_FAILURE([missing ALSA library],[2])])
 
 AC_CHECK_LIB([flite],[flite_init],,
   [AC_MSG_FAILURE([missing Flite library],[2])])
@@ -56,7 +56,13 @@ AC_CHECK_LIB([flite_usenglish],[main],,
 AC_CHECK_LIB([flite_cmu_us_kal],[main],,
   [AC_MSG_FAILURE([missing Flite library],[2])])
 
+AC_CHECK_LIB([flite_cmu_time_awb],[main],,
+  [AC_MSG_FAILURE([missing Flite library],[2])])
+
 AC_CHECK_LIB([flite_cmu_us_kal16],[main],,
+  [AC_MSG_FAILURE([missing Flite library],[2])])
+
+AC_CHECK_LIB([flite_cmu_us_awb],[main],,
   [AC_MSG_FAILURE([missing Flite library],[2])])
 
 AC_CHECK_LIB([flite_cmu_us_rms],[main],,
@@ -64,6 +70,8 @@ AC_CHECK_LIB([flite_cmu_us_rms],[main],,
 
 AC_CHECK_LIB([flite_cmu_us_slt],[main],,
   [AC_MSG_FAILURE([missing Flite library],[2])])
+
+
 
 VICARE_EXTENSION_LIBRARY_VERSION([flite],[0],[0],[0])
 

@@ -1,6 +1,6 @@
 /*
-  Part of: Vicare/Template
-  Contents: Template for Vicare
+  Part of: Vicare/Flite
+  Contents: Flite for Vicare
   Date: Sat Jan 21, 2012
 
   Abstract
@@ -28,7 +28,7 @@
  ** Headers.
  ** ----------------------------------------------------------------- */
 
-#include "vicare-template-internals.h"
+#include "vicare-flite-internals.h"
 
 
 /** --------------------------------------------------------------------
@@ -36,24 +36,24 @@
  ** ----------------------------------------------------------------- */
 
 ikptr
-ikrt_template_version_interface_current (void)
+ikrt_flite_version_interface_current (void)
 {
-  return IK_FIX(vicare_template_VERSION_INTERFACE_CURRENT);
+  return IK_FIX(vicare_flite_VERSION_INTERFACE_CURRENT);
 }
 ikptr
-ikrt_template_version_interface_revision (void)
+ikrt_flite_version_interface_revision (void)
 {
-  return IK_FIX(vicare_template_VERSION_INTERFACE_REVISION);
+  return IK_FIX(vicare_flite_VERSION_INTERFACE_REVISION);
 }
 ikptr
-ikrt_template_version_interface_age (void)
+ikrt_flite_version_interface_age (void)
 {
-  return IK_FIX(vicare_template_VERSION_INTERFACE_AGE);
+  return IK_FIX(vicare_flite_VERSION_INTERFACE_AGE);
 }
 ikptr
-ikrt_template_version (ikpcb * pcb)
+ikrt_flite_version (ikpcb * pcb)
 {
-  return ika_bytevector_from_cstring(pcb, vicare_template_VERSION_INTERFACE_STRING);
+  return ika_bytevector_from_cstring(pcb, vicare_flite_VERSION_INTERFACE_STRING);
 }
 
 /* end of file */

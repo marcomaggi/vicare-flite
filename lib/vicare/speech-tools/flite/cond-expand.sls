@@ -35,7 +35,7 @@
   (import (only (vicare language-extensions cond-expand helpers)
 		define-cond-expand-identifiers-helper)
     (vicare speech-tools flite features)
-    (for (vicare crypto flite)
+    (for (vicare speech-tools flite)
 	 (meta -1)))
 
 

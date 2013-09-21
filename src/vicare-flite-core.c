@@ -28,7 +28,7 @@
  ** Headers.
  ** ----------------------------------------------------------------- */
 
-#include "vicare-template-internals.h"
+#include "vicare-flite-internals.h"
 
 
 /** --------------------------------------------------------------------
@@ -123,9 +123,9 @@ ikrt_flite_voice_add_lex_addenda (ikpcb * pcb)
 
 #if 0
 ikptr
-ikrt_template-doit (ikpcb * pcb)
+ikrt_flite-doit (ikpcb * pcb)
 {
-#ifdef HAVE_TEMPLATE_DOIT
+#ifdef HAVE_FLITE_DOIT
   return IK_VOID;
 #else
   feature_failure(__func__);

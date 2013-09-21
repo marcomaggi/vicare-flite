@@ -41,10 +41,10 @@
     flite-voice-add-lex-addenda
 
     ;; version numbers and strings
-    vicare-template-version-interface-current
-    vicare-template-version-interface-revision
-    vicare-template-version-interface-age
-    vicare-template-version
+    vicare-flite-version-interface-current
+    vicare-flite-version-interface-revision
+    vicare-flite-version-interface-age
+    vicare-flite-version
 
 ;;; --------------------------------------------------------------------
 ;;; still to be implemented
@@ -58,7 +58,7 @@
 	    ffi.)
     (prefix (vicare ffi foreign-pointer-wrapper)
 	    ffi.)
-    #;(vicare language-extensions syntaxes)
+    (vicare arguments validation)
     #;(prefix (vicare platform words) words.))
 
 
@@ -71,17 +71,17 @@
 
 ;;;; version functions
 
-(define (vicare-template-version-interface-current)
-  (capi.vicare-template-version-interface-current))
+(define (vicare-flite-version-interface-current)
+  (capi.vicare-flite-version-interface-current))
 
-(define (vicare-template-version-interface-revision)
-  (capi.vicare-template-version-interface-revision))
+(define (vicare-flite-version-interface-revision)
+  (capi.vicare-flite-version-interface-revision))
 
-(define (vicare-template-version-interface-age)
-  (capi.vicare-template-version-interface-age))
+(define (vicare-flite-version-interface-age)
+  (capi.vicare-flite-version-interface-age))
 
-(define (vicare-template-version)
-  (ascii->string (capi.vicare-template-version)))
+(define (vicare-flite-version)
+  (ascii->string (capi.vicare-flite-version)))
 
 
 ;;;; data structures
