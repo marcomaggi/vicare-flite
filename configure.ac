@@ -41,6 +41,8 @@ AC_DEFINE([_GNU_SOURCE],[1],[enable everything GNU])
 AC_CHECK_HEADERS([flite/flite.h],,
   [AC_MSG_FAILURE([missing flite.h header],[2])])
 
+dnl Beware of the order of the libraries!!!
+
 AC_CHECK_LIB([asound],[main],,
   [AC_MSG_FAILURE([missing ALSA library],[2])])
 
@@ -70,8 +72,6 @@ AC_CHECK_LIB([flite_cmu_us_rms],[main],,
 
 AC_CHECK_LIB([flite_cmu_us_slt],[main],,
   [AC_MSG_FAILURE([missing Flite library],[2])])
-
-
 
 VICARE_EXTENSION_LIBRARY_VERSION([flite],[0],[0],[0])
 

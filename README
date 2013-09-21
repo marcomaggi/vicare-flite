@@ -18,19 +18,18 @@ Topics
 1. Introduction
 ---------------
 
-This package is a distribution of C and Scheme libraries for
-Vicare Scheme,  an R6RS compliant Scheme  implementation; it
-provides bindings for the Flite C language library.
+This package  is a  distribution of  C and  Scheme libraries  for Vicare
+Scheme, an  R6RS compliant  Scheme implementation; it  provides bindings
+for the Flite C language library.
 
-  Flite (festival-lite) is a  small, fast run-time synthesis
-engine  developed at  Carnegie Mellon  University (CMU)  and
-primarily designed for small  embedded machines and/or large
-servers.   Flite is  designed  as  an alternative  synthesis
-engine to Festival for voices  built using the FestVox suite
-of voice building tools.
+  Flite  (festival-lite)  is a  small,  fast  run-time synthesis  engine
+developed at Carnegie Mellon University (CMU) and primarily designed for
+small embedded machines  and/or large servers.  Flite is  designed as an
+alternative  synthesis engine  to Festival  for voices  built using  the
+FestVox suite of voice building tools.
 
-  The  last   time  the  author  bothered   to  update  this
-paragraph, he had tested Flite version 1.4.
+  The last  time the author  bothered to  update this paragraph,  he had
+tested Flite version 1.4.
 
   This package makes use of the GNU Autotools.
 
@@ -40,31 +39,55 @@ paragraph, he had tested Flite version 1.4.
 
 Copyright (c) 2013 Marco Maggi <marco.maggi-ipsu@poste.it>
 
-This  program  is free  software:  you  can redistribute  it
-and/or modify it  under the terms of the  GNU General Public
-License as published by the Free Software Foundation, either
-version  3 of  the License,  or (at  your option)  any later
-version.
+This program is free software: you  can redistribute it and/or modify it
+under the  terms of the GNU  General Public License as  published by the
+Free Software Foundation,  either version 3 of the License,  or (at your
+option) any later version.
 
-This  program is  distributed in  the hope  that it  will be
-useful, but  WITHOUT ANY WARRANTY; without  even the implied
-warranty  of  MERCHANTABILITY or  FITNESS  FOR A  PARTICULAR
-PURPOSE.   See  the  GNU  General Public  License  for  more
-details.
+This program  is distributed  in the  hope that it  will be  useful, but
+WITHOUT   ANY   WARRANTY;  without   even   the   implied  warranty   of
+MERCHANTABILITY  or  FITNESS FOR  A  PARTICULAR  PURPOSE.  See  the  GNU
+General Public License for more details.
 
-You should  have received a  copy of the GNU  General Public
-License   along   with    this   program.    If   not,   see
-<http://www.gnu.org/licenses/>.
+You should have received a copy  of the GNU General Public License along
+with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 3. Install
 ----------
 
-Before installing Vicare/Flite make sure to have a correctly
-installed Flite library and Vicare Scheme.
+3.1 Installing Flite
+--------------------
 
-  To install Vicare/Flite from  a proper release tarball, we
-must unpack the archive then do:
+We should follow the instructions  in the Flite description files.  This
+is what  the author of  this package does  with Flite version  1.4 after
+unpacking the release archive "flite-1.4-release.tar.bz2":
+
+   $ ./configure \
+        --prefix=/usr/local			\
+	--with-audio=alsa			\
+        --enable-shared --disable-static        \
+        CFLAGS='-O3'
+   $ make
+   $ sudo make install
+
+because  we select  "alsa" as  audio API:  this package  will link  with
+"libasound.so".   Notice   that  the   build  infrastructure   of  Flite
+does *not* recognise the DESTDIR environment  variable, so if we want to
+install in  a temporary  location (for packaging  purposes), we  have to
+install with:
+
+   $ sudo make install prefix="/tmp/flite/usr/local"
+
+
+3.2 Installing Vicare/Flite
+---------------------------
+
+Before installing Vicare/Flite  make sure to have  a correctly installed
+Flite library and Vicare Scheme.
+
+  To install Vicare/Flite from a  proper release tarball, we must unpack
+the archive then do:
 
    $ cd vicare-flite-0.1.0
    $ mkdir build
@@ -74,30 +97,29 @@ must unpack the archive then do:
    $ make check
    $ make install
 
-notice  that the  "configure" script  is prepared  to enable
-shared libraries and disable static libraries: this must not
-be  changed, because  the package  is meant  to install  a C
-shared library to be dynamically loaded.
+notice  that  the  "configure"  script  is  prepared  to  enable  shared
+libraries  and  disable static  libraries:  this  must not  be  changed,
+because  the package  is  meant to  install  a C  shared  library to  be
+dynamically loaded.
 
   To test what a rule will do use the "-n" option; example:
 
     $ make install -n
 
-  The "Makefile" supports the "DESTDIR" environment variable
-to install the files under a temporary location; example:
+  The "Makefile" supports the  "DESTDIR" environment variable to install
+the files under a temporary location; example:
 
     $ make install DESTDIR=/tmp/vicare-flite
 
-  If,  instead, we  have  checked out  a  revision from  the
-repository, we  will have to first  build the infrastructure
-running a script from the top source directory:
+  If, instead,  we have checked out  a revision from the  repository, we
+will have  to first build the  infrastructure running a script  from the
+top source directory:
 
    $ cd vicare-flite
    $ sh autogen.sh
 
-after this the procedure is the same as the one for building
-from  a  proper  release  tarball, but  we  have  to  enable
-maintainer mode:
+after this  the procedure  is the same  as the one  for building  from a
+proper release tarball, but we have to enable maintainer mode:
 
     $ ../configure --enable-maintainer-mode [options]
     $ make
@@ -108,16 +130,14 @@ maintainer mode:
 
 		  $(libdir)/vicare-scheme
 
-  After  installation, the  makefile rule  "vfasl-installed"
-will  precompile the  libraries installed  in the  hierarchy
-(vicare   speech-tools  flite   ---);   the  makefile   rule
-"installcheck" will run the test suite against the installed
-libraries.
+  After   installation,  the   makefile   rule  "vfasl-installed"   will
+precompile the libraries installed in the hierarchy (vicare speech-tools
+flite ---);  the makefile  rule "installcheck" will  run the  test suite
+against the installed libraries.
 
-  The variable VFLAGS is available  to the user when running
-"configure" and  "make" to add  command line options  to the
-execution of  "vicare" when compiling libraries  and running
-tests; for example:
+  The variable VFLAGS is available  to the user when running "configure"
+and "make" to add command line options to the execution of "vicare" when
+compiling libraries and running tests; for example:
 
    $ make VFLAGS="-g -O2 --print-loaded-libraries"
 
@@ -131,9 +151,9 @@ Read the documentation.
 A. Credits
 ----------
 
-Vicare/Flite was  written by Marco Maggi.   Vicare Scheme is
-an R6RS compliant fork  of Ikarus Scheme; originally created
-by Abdulaziz Ghuloum, it is now maintained by Marco Maggi.
+Vicare/Flite  was written  by Marco  Maggi.   Vicare Scheme  is an  R6RS
+compliant  fork  of  Ikarus  Scheme;  originally  created  by  Abdulaziz
+Ghuloum, it is now maintained by Marco Maggi.
 
   Flite is developed at Carnegie Mellon University (CMU).
 
@@ -141,8 +161,8 @@ by Abdulaziz Ghuloum, it is now maintained by Marco Maggi.
 B. Bugs
 -------
 
-Bug  reports  are  appreciated.    Register  issues  at  the
-Vicare/Flite issue tracker:
+Bug reports are appreciated.  Register  issues at the Vicare/Flite issue
+tracker:
 
      <http://github.com/marcomaggi/vicare-flite/issues>
 
@@ -179,6 +199,6 @@ Flite can be found here:
 # Local Variables:
 # mode: text
 # coding: utf-8-unix
-# fill-column: 60
+# fill-column: 72
 # paragraph-start: "*"
 # End:
