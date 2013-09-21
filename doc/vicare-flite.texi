@@ -150,6 +150,10 @@ Appendices
 * Documentation License::       GNU Free Documentation License.
 * references::                  Bibliography and references.
 
+External documents
+
+* flite: (flite).               Flite documentation.
+
 Indexes
 
 * concept index::               An entry for each concept.
