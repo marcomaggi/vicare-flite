@@ -69,8 +69,10 @@ unpacking the release archive "flite-1.4-release.tar.bz2":
         --enable-shared --disable-static        \
         CFLAGS='-O3'
    $ make
-   $ make info
+   $ (cd doc ; makeinfo -o flite.info flite.texi)
    $ sudo make install
+   $ sudo install -m 0755 -d /usr/local/share/info
+   $ sudo install -m 0644 doc/flite.info /usr/local/share/info
 
 because  we select  "alsa" as  audio API:  this package  will link  with
 "libasound.so".   Notice   that  the   build  infrastructure   of  Flite
