@@ -1,0 +1,387 @@
+\input texinfo.tex
+@c %**start of header
+@setfilename vicare-flite.info
+@settitle Flite for Vicare
+@c %**end of header
+
+@include version.texi
+@include macros.texi
+
+@c page
+@c ------------------------------------------------------------
+@c Values.
+@c ------------------------------------------------------------
+
+@set TITLE                      Flite for Vicare
+
+@c To be used as @value{PACKAGE} whenever we need to include the full
+@c name of this package.
+@set PACKAGE                    Vicare/@flite{}
+
+@c To be used as @value{PACKAGE} whenever we need to include the
+@c nickname of the project: the name that is used to compose the
+@c distribution tarball or the web address.
+@set PACKAGE_NICKNAME           vicare-flite
+
+@c To be used as @value{AUTHOR} whenever we need to include the list of
+@c authors of this document.
+@set AUTHOR                     Marco Maggi
+
+@c To be used as @value{AUTHOR_EMAIL} whenever we need to include the
+@c email of the *single* author of this document.
+@set AUTHOR_EMAIL               @email{marco.maggi.ipsu@@poste.it}
+
+@c To be used as @value{COPYRIGHT_YEARS} whenever we need to include the
+@c list of copyright years.
+@set COPYRIGHT_YEARS            2013
+
+@c ------------------------------------------------------------
+
+@set FOREIGN_PACKAGE            @flite{}
+@set FOREIGN_VERSION            1.4
+@set FOREIGN_URL                @url{http:/@//@/www.speech.cs.cmu.edu/@/flite/@/}
+@set FOREIGN_SCHEME_LIB         @library{vicare speech-tools flite}
+@set GITHUB_URL                 @url{http:/@//@/github.com/@/marcomaggi/@/vicare-flite}
+@set SOURCEFORGE_URL            @url{https:/@//@/sourceforge.net/@/projects/@/vicare-flite/@/}
+@set DOWNLOAD_URL               @url{https:/@//@/sourceforge.net/@/projects/@/vicare-flite/@/files/@/}
+@set DOCUMENTATION_URL          @url{http:/@//@/marcomaggi.github.com/@/docs/@/vicare-flite.html}
+@set VICARE_HOMEPAGE_URL        @url{http:/@//@/marcomaggi.github.com/@/vicare.html}
+
+
+@macro fliteref{NODE, TITLE}
+@xref{\NODE\,\TITLE\,\TITLE\,flite}
+@end macro
+
+@macro flite{}
+@acronym{FLITE}
+@end macro
+
+@c page
+@c ------------------------------------------------------------
+@c Copyright notice.
+@c ------------------------------------------------------------
+
+@copying
+This document describes version @version{} of @value{PACKAGE}, a
+distribution of C and Scheme libraries for Vicare Scheme, an @rnrs{6}
+compliant Scheme implementation; it provides bindings for the
+@value{FOREIGN_PACKAGE} C language library.
+
+The package is distributed under the terms of the @gnu{} General Public
+License (@gpl{}) and can be downloaded from:
+
+@center @value{DOWNLOAD_URL}
+
+@noindent
+development takes place at:
+
+@center @value{GITHUB_URL}
+
+@noindent
+and as backup at:
+
+@center @value{SOURCEFORGE_URL}
+
+@noindent
+@value{FOREIGN_PACKAGE} is available at:
+
+@center @value{FOREIGN_URL}
+
+@noindent
+Copyright @copyright{} @value{COPYRIGHT_YEARS} by @value{AUTHOR} @value{AUTHOR_EMAIL}
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the @gnu{} Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with
+Invariant Sections being ``@gnu{} Free Documentation License'' and
+``@gnu{} General Public License'', no Front--Cover Texts, and no
+Back--Cover Texts.  A copy of the license is included in the section
+entitled ``@gnu{} Free Documentation License''.
+@end quotation
+@end copying
+
+@c page
+@c ------------------------------------------------------------
+@c Headers.
+@c ------------------------------------------------------------
+
+@titlepage
+@title @value{TITLE}
+@subtitle Revision @version{}
+@author @value{AUTHOR} @value{AUTHOR_EMAIL}
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c ------------------------------------------------------------
+
+@ifinfo
+@dircategory Development
+@direntry
+* vicare-flite: (vicare-flite). @value{TITLE}.
+@end direntry
+@end ifinfo
+
+@c ------------------------------------------------------------
+
+@ignore
+@syncodeindex tp cp
+@syncodeindex vr cp
+@syncodeindex fn cp
+@end ignore
+
+@c page
+@ifnottex
+@node Top
+@top @value{TITLE}
+
+@insertcopying
+
+@menu
+* overview::                    Overview of the package.
+* version::                     Flite version informations.
+* plain::                       Plain programming interface.
+
+Appendices
+
+* Package License::             GNU General Public License.
+* Documentation License::       GNU Free Documentation License.
+* references::                  Bibliography and references.
+
+Indexes
+
+* concept index::               An entry for each concept.
+* function index::              An entry for each function.
+* variable index::              An entry for each variable.
+* type index::                  An entry for each type.
+@end menu
+@end ifnottex
+
+@c page
+@node overview
+@chapter Overview of the package
+
+
+Vicare Scheme is an @rnrs{6} compliant Scheme language implementation in
+the form of a native compiler for x86 architectures, officially
+supporting @gnu{}+Linux systems.  @value{PACKAGE} is a distribution of C
+language and Scheme language libraries for Vicare Scheme; it provides
+bindings for the @value{FOREIGN_PACKAGE} C language library.
+
+The last time the author bothered to update this paragraph, he had
+tested @value{FOREIGN_PACKAGE} version @value{FOREIGN_VERSION}; the
+@value{FOREIGN_PACKAGE} library is available at:
+
+@center @value{FOREIGN_URL}
+
+The package installs a C language library implementing wrapper C
+functions for the C language @value{FOREIGN_PACKAGE} library; on top of
+this, the Scheme library @library{vicare speech-tools flite} exports one
+binding for each @value{FOREIGN_PACKAGE} public function; additionally
+the library @library{vicare speech-tools flite constants} exports one
+binding for each constant value defined in the C language header
+@file{flite.h}.
+
+The following Scheme libraries are installed:
+
+@table @library
+@item vicare speech-tools flite
+@cindex Library @library{vicare speech-tools flite}
+@cindex @library{vicare speech-tools flite}, library
+It exports one binding for each @value{FOREIGN_PACKAGE} public function.
+All the Scheme function names are directly derived from the C function
+names by replacing underscore characters @samp{_} with dash characters
+@samp{-}; so @cfunc{flite_init} becomes @func{flite-init}.
+
+@item vicare speech-tools flite unsafe-capi
+@cindex Library @library{vicare speech-tools flite unsafe-capi}
+@cindex @library{vicare speech-tools flite unsafe-capi}, library
+It exports one syntax binding for each @value{FOREIGN_PACKAGE} public
+function.  All the Scheme syntax names are directly derived from the C
+function names by replacing underscore characters @samp{_} with dash
+characters @samp{-}; so @cfunc{flite_init} becomes @func{flite-init}.
+
+These syntaxes expand to a direct call to the C language wrapper
+functions in the @value{PACKAGE} library; they are not meant to be
+called in normal usage of the package.
+
+@item vicare speech-tools flite constants
+@cindex Library @library{vicare speech-tools flite constants}
+@cindex @library{vicare speech-tools flite constants}, library
+It exports one binding for each constant value defined in the C language
+header @file{flite.h}.
+
+@item vicare speech-tools flite features
+@cindex Library @library{vicare speech-tools flite features}
+@cindex @library{vicare speech-tools flite features}, library
+It exports one identifier syntax binding for each @code{HAVE_} constant
+defined by the @command{configure} script, expanding to @true{} or
+@false{}.
+@end table
+
+Scheme libraries are installed under the directory:
+
+@center @file{$(libdir)/vicare-scheme}
+
+After installation, under the directory:
+
+@center @file{$(libexecdir)/@value{PACKAGE_NICKNAME}}
+
+@noindent
+a script @file{compile-all.sps} can be executed to precompile the
+installed libraries; for example:
+
+@example
+$ sudo vicare \
+   --fasl-directory /var/cache/vicare-scheme \
+   --compile-dependencies \
+      /usr/local/libexec/vicare-flite/compile-all.sps
+@end example
+
+This document contains only a brief description of the functions: refer
+to the @value{FOREIGN_PACKAGE}'s documentation for details.
+
+@c page
+@node version
+@chapter @value{FOREIGN_PACKAGE} version informations
+
+
+The installed C library follows version numbering as established by the
+@gnu{} Autotools.  For an explanation of interface numbers as managed by
+@gnu{} Libtool @xref{Libtool versioning, interface, Libtool's versioning
+system, libtool, Shared library support for @gnu{}}.
+
+The following bindings are exported by the library
+@value{FOREIGN_SCHEME_LIB}.
+
+
+@defun vicare-flite-version-interface-current
+@defunx vicare-flite-version-interface-revision
+@defunx vicare-flite-version-interface-age
+Return a fixnum representing a version number.
+@end defun
+
+
+@defun vicare-flite-version
+Return a Scheme string representing the version number.
+@end defun
+
+@c page
+@node plain
+@chapter Plain programming interface
+
+
+@cindex Library @library{vicare speech-tools flite}
+@cindex @library{vicare speech-tools flite}, library
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
+
+
+@defun flite-init
+@end defun
+
+
+@defun flite-text-to-wave
+@end defun
+
+
+@defun flite-file-to-speech
+@end defun
+
+
+@defun flite-text-to-speech
+@end defun
+
+
+@defun flite-synth-text
+@end defun
+
+
+@defun flite-synth-phones
+@end defun
+
+
+@defun flite-voice-select
+@end defun
+
+
+@defun flite-voice-add-lex-addenda
+@end defun
+
+@c page
+@c ------------------------------------------------------------
+@c Appendices.
+@c ------------------------------------------------------------
+
+@include gpl-3.0.texi
+@include fdl-1.3.texi
+
+@c page
+@node references
+@appendix Bibliography and references
+
+
+The documentation of @value{PACKAGE} is available online:
+
+@center @value{DOCUMENTATION_URL}
+
+@noindent
+the latest version of this package can be downloaded from:
+
+@center @value{DOWNLOAD_URL}
+
+@noindent
+development takes place at:
+
+@center @value{GITHUB_URL}
+
+@noindent
+and as backup at:
+
+@center @value{SOURCEFORGE_URL}
+
+@noindent
+the home page of the Vicare project is at:
+
+@center @value{VICARE_HOMEPAGE_URL}
+
+@noindent
+the home page of the Nausicaa project is at:
+
+@center @value{NAUSICAA_HOMEPAGE_URL}
+
+@noindent
+@value{FOREIGN_PACKAGE} can be found here:
+
+@center @value{FOREIGN_URL}
+
+@c page
+@node concept index
+@appendix An entry for each concept
+
+@printindex cp
+
+@node function index
+@appendix An entry for each function.
+
+@printindex fn
+
+@node variable index
+@appendix An entry for each variable.
+
+@printindex vr
+
+@node type index
+@appendix An entry for each type.
+
+@printindex tp
+
+@contents
+@bye
+
+@c end of file
+
