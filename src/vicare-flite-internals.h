@@ -37,20 +37,25 @@
 #include <vicare.h>
 #include <flite/flite.h>
 
+extern cst_voice *	register_cmu_us_slt	(const char *voxdir);
+extern cst_voice *	register_cmu_us_awb	(const char *voxdir);
+extern cst_voice *	register_cmu_time_awb	(const char *voxdir);
+extern cst_voice *	register_cmu_us_kal	(const char *voxdir);
+extern cst_voice *	register_cmu_us_kal16	(const char *voxdir);
+extern cst_voice *	register_cmu_us_rms	(const char *voxdir);
+
+extern cst_val *	ik_imported_flite_set_voice_list (void);
+
 
 /** --------------------------------------------------------------------
  ** Handling of Scheme objects.
  ** ----------------------------------------------------------------- */
 
-#define ika_integer_from_flite_errcode(PCB,CODE)	\
-	ika_integer_from_int((PCB),(CODE))
-/* IK_FIX(CODE) */
-
-/* Accessors for the fields of the Scheme structure "struct". */
-#define IK_FLITE_STRUCT_POINTER(CONN)		IK_FIELD((CONN),0)
-#define IK_FLITE_STRUCT_PATHNAME(CONN)		IK_FIELD((CONN),1)
-#define IK_FLITE_CONNECTION(CONN)	\
-  IK_POINTER_DATA_VOIDP(IK_FLITE_STRUCT_POINTER(CONN))
+/* Accessors for the fields of the Scheme structure "cst_voice". */
+#define IK_FLITE_VOICE_POINTER(VOICE)		IK_FIELD((VOICE),0)
+#define IK_FLITE_VOICE_OWNER(VOICE)		IK_FIELD((VOICE),1)
+#define IK_FLITE_VOICE(VOICE)	\
+  IK_POINTER_DATA_VOIDP(IK_FLITE_VOICE_POINTER(VOICE))
 
 
 /** --------------------------------------------------------------------

@@ -9,6 +9,7 @@ lib_LTLIBRARIES			= libvicare-flite.la
 libvicare_flite_la_LDFLAGS	= -version-info $(vicare_flite_VERSION)
 libvicare_flite_la_SOURCES	= \
 	vicare-flite-core.c			\
+	vicare-flite-imported.c			\
 	vicare-flite-version.c			\
 	vicare-flite-internals.h
 

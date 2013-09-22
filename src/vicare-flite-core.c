@@ -32,23 +32,75 @@
 
 
 /** --------------------------------------------------------------------
- ** Flite C wrappers.
+ ** Initialisation.
  ** ----------------------------------------------------------------- */
 
 ikptr
 ikrt_flite_init (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_INIT
-  /* rv = flite_init(); */
+  flite_init();
+  ik_imported_flite_set_voice_list();
   return IK_VOID;
 #else
   feature_failure(__func__);
 #endif
 }
+
+
+/** --------------------------------------------------------------------
+ ** Voice.
+ ** ----------------------------------------------------------------- */
+
+ikptr
+ikrt_flite_voice_select (ikptr s_voice_name, ikpcb * pcb)
+{
+#ifdef HAVE_FLITE_VOICE_SELECT
+  const char *	voice_name = IK_GENERALISED_C_STRING(s_voice_name);
+  cst_voice *	rv;
+  rv = flite_voice_select(voice_name);
+  if (NULL != rv) {
+    return ika_pointer_alloc(pcb, (ik_ulong)rv);
+  } else
+    return IK_FALSE;
+#else
+  feature_failure(__func__);
+#endif
+}
+ikptr
+ikrt_flite_voice_finalise (ikptr s_voice, ikpcb * pcb)
+{
+  ikptr		s_pointer	= IK_FLITE_VOICE_POINTER(s_voice);
+  if (ik_is_pointer(s_pointer)) {
+    cst_voice *	voice		= IK_POINTER_DATA_VOIDP(s_pointer);
+    int		owner		= IK_BOOLEAN_TO_INT(IK_FLITE_VOICE_OWNER(s_voice));
+    if (voice && owner) {
+      IK_POINTER_SET_NULL(s_pointer);
+    }
+  }
+  /* Return false so that the return value of "$flite-voice-finalise" is
+     always false. */
+  return IK_FALSE;
+}
+ikptr
+ikrt_flite_voice_name (ikptr s_voice, ikpcb * pcb)
+{
+  ikptr		s_pointer	= IK_FLITE_VOICE_POINTER(s_voice);
+  if (ik_is_pointer(s_pointer)) {
+    cst_voice *	voice		= IK_POINTER_DATA_VOIDP(s_pointer);
+    if ((NULL != voice) && (NULL != voice->name)) {
+      return ika_string_from_cstring(pcb, voice->name);
+    }
+  }
+  return ika_string_from_cstring(pcb, "unknown-flite-voice");
+}
+
+
 ikptr
 ikrt_flite_text_to_wave (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_TEXT_TO_WAVE
+
   /* rv = flite_text_to_wave(); */
   return IK_VOID;
 #else
@@ -90,16 +142,6 @@ ikrt_flite_synth_phones (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_SYNTH_PHONES
   /* rv = flite_synth_phones(); */
-  return IK_VOID;
-#else
-  feature_failure(__func__);
-#endif
-}
-ikptr
-ikrt_flite_voice_select (ikpcb * pcb)
-{
-#ifdef HAVE_FLITE_VOICE_SELECT
-  /* rv = flite_voice_select(); */
   return IK_VOID;
 #else
   feature_failure(__func__);
