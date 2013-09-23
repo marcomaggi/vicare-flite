@@ -609,6 +609,188 @@ The library @library{nausicaa speech-tools flite} implements an
 interface to @library{vicare speech-tools flite} on top of the
 @library{nausicaa} language.
 
+@menu
+* nau voice::                   Voice selection and handling.
+@end menu
+
+@c page
+@node nau voice
+@section Voice selection and handling
+
+
+@menu
+* nau voice objects::           Voice objects.
+* nau voice methods::           Voice methods.
+@end menu
+
+@c page
+@node nau voice objects
+@subsection Voice objects
+
+
+The following bindings are exported by the library @library{nausicaa
+speech-tools flite}.
+
+
+@deftp {Label Type} @aclass{flite-voice}
+@cindex Argument @var{voice}
+@cindex @var{voice} argument
+Label type representing objects of type @objtype{flite-voice}.  When
+instances of this type are used as arguments to functions: this
+documentation identifies them as @var{voice}.
+
+Instances of this type must be finalised with @func{finalise}; whenever
+an instance of this type is garbage collected: @func{finalise} is
+automatically applied to it and any error ignored.
+@end deftp
+
+
+@defop {Default constructor} @aclass{flite-voice} constructor @var{voice-name}
+Build and return a new @class{flite-voice} object making use of the
+specified voice; if an error occurs raise an exception.
+
+@var{voice-name} must be a generalised C string holding the name of a
+voice, @cbuffersref{}.  It defaults to the string @code{"rms"}.  If the
+selected voice name does not match an available one: a default voice is
+automatically selected.
+@end defop
+
+
+@deffn Syntax @aclass{flite-voice} (@meta{voice-name})
+Build and return a new @class{flite-voice} using the default
+constructor.
+@end deffn
+
+
+@defmethod @aclass{flite-voice} finalise
+Finalise the instance; return unspecified values.  It is fine to call
+this method multiple times for the same instance.
+@end defmethod
+
+
+@deftypemethod @aclass{flite-voice} @aclass{boolean} alive?
+Return @true{} if @var{obj} is an instance of @class{flite-voice} and it
+has not been finalised; return @false{} otherwise.
+@end deftypemethod
+
+
+@c ------------------------------------------------------------
+
+@subsubheading Object properties
+
+
+@defmethod @aclass{flite-voice} putprop @var{key} @var{value}
+Add a new property @var{key} to the property list of the instance;
+@var{key} must be a symbol.  If @var{key} is already set: the old entry
+is mutated to reference the new @var{value}.
+@end defmethod
+
+
+@defmethod @aclass{flite-voice} getprop @var{key}
+Return the value of the property @var{key} in the property list of the
+instance; if @var{key} is not set: return @false{}.  @var{key} must be a
+symbol.
+@end defmethod
+
+
+@defmethod @aclass{flite-voice} remprop @var{key}
+Remove the property @var{key} from the property list of the instance; if
+@var{key} is not set: nothing happens.  @var{key} must be a symbol.
+@end defmethod
+
+
+@defmethod @aclass{flite-voice} property-list
+Return a new association list representing the property list of the
+instance.  The order of the entries is the same as the property creation
+order.
+@end defmethod
+
+@c ------------------------------------------------------------
+
+@subsubheading Virtual fields
+
+
+@deftypecv @aclass{flite-voice} @aclass{procedure} destructor
+Retrieve or set a destructor function associated to the instance.
+
+Whenever the instance is finalised, either explicitly with
+@func{finalise} or implicitly by the garbage collector, the custom
+destructor is applied to the instance before the internal state of the
+instance is destroyed.
+@end deftypecv
+
+@c ------------------------------------------------------------
+
+@subsubheading Other operations
+
+
+@defmethod @aclass{flite-voice} hash
+Return an exact integer to be used as hashtable key for the instance.
+Hashtables having a @class{flite-voice} as key can be instantiated as
+follows:
+
+@example
+(make-hashtable (lambda ((V <flite-voice>))
+                  (V hash))
+                eq?)
+@end example
+@end defmethod
+
+@c ------------------------------------------------------------
+
+@subsubheading Arguments validation
+
+
+The following bindings are meant to be used with the facilities of the
+library @library{vicare arguments validation}.
+
+
+@deffn {Validation Clause} flite-voice @var{obj}
+@deffnx {Validation Clause} false-or-flite-voice @var{obj}
+Succeed if @var{obj} is an instance of @class{flite-voice}; the second
+clause also accepts @false{}.
+@end deffn
+
+
+@deffn {Validation Clause} flite-voice/alive @var{obj}
+@deffnx {Validation Clause} false-or-flite-voice/alive @var{obj}
+Succeed if @var{obj} is an instance of @class{flite-voice} and the
+method @func{alive?} would return @true{} if applied to it; the second
+clause also accepts @false{}.
+@end deffn
+
+@c page
+@node nau voice methods
+@subsection Voice methods
+
+
+The following bindings are exported by the library @library{nausicaa
+speech-tools flite}.
+
+
+@defmethod @aclass{flite-voice} name
+Return a Scheme string representing the name of the given instance.
+@end defmethod
+
+
+@defmethod @aclass{flite-voice} play @var{text}
+Process the given text and produce some output using the instance voice.
+Return a flonum representing the number of seconds of generated output.
+
+@var{text} must be a generalised C string holding the text to process,
+@cbuffersref{}.
+
+@example
+(import (nausicaa)
+  (prefix (nausicaa speech-tools flite) flite.))
+
+(flite.flite-init)
+
+(flite.<flite-voice> voice (<> ("slt")))
+(voice play "text to speech play")
+@end example
+@end defmethod
+
 @c page
 @c ------------------------------------------------------------
 @c Appendices.

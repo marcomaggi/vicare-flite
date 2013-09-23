@@ -104,6 +104,8 @@ VICARE_STRING_CONSTANT_TESTS([FLITE_PROJECT_NAME FLITE_PROJECT_PREFIX FLITE_PROJ
 dnl Flite functions checking
 AC_CHECK_FUNCS([flite_init flite_text_to_wave flite_file_to_speech flite_text_to_speech flite_synth_text flite_synth_phones flite_voice_select flite_voice_add_lex_addenda])
 
+AC_CHECK_FUNCS([register_cmu_time_awb register_cmu_us_awb register_cmu_us_kal register_cmu_us_kal16 register_cmu_us_rms register_cmu_us_slt])
+
 #page
 #### finish
 

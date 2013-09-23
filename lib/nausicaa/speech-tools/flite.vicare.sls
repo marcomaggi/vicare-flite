@@ -43,7 +43,9 @@
 (define-label <flite-voice>
   (predicate flite-voice?)
   (protocol (lambda () flite-voice-select))
-  (virtual-fields (mutable destructor flite-voice-custom-destructor set-flite-voice-custom-destructor!))
+  (virtual-fields (mutable (destructor <procedure>)
+			   flite-voice-custom-destructor
+			   set-flite-voice-custom-destructor!))
   (methods (alive?		flite-voice?/alive)
 	   (putprop		flite-voice-putprop)
 	   (getprop		flite-voice-getprop)
