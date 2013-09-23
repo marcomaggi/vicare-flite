@@ -30,14 +30,25 @@
 (library (vicare speech-tools flite)
   (export
 
-    ;; Flite
+    ;; library initialisation
     flite-init
-    flite-text-to-wave
-    flite-file-to-speech
-    flite-text-to-speech
-    flite-synth-text
-    flite-synth-phones
+
+    ;; voice
+    flite-voice?
+    flite-voice?/alive			$flite-voice-alive?
+    flite-voice-custom-destructor	set-flite-voice-custom-destructor!
+    flite-voice-putprop			flite-voice-getprop
+    flite-voice-remprop			flite-voice-property-list
+    flite-voice-hash
+
+    flite-voice.vicare-arguments-validation
+    flite-voice/alive.vicare-arguments-validation
+    false-or-flite-voice.vicare-arguments-validation
+    false-or-flite-voice/alive.vicare-arguments-validation
+
     flite-voice-select
+    flite-voice-finalise
+    flite-voice-name
     flite-voice-add-lex-addenda
 
     ;; version numbers and strings
@@ -49,16 +60,19 @@
 ;;; --------------------------------------------------------------------
 ;;; still to be implemented
 
+    flite-text-to-wave
+    flite-file-to-speech
+    flite-text-to-speech
+    flite-synth-text
+    flite-synth-phones
     )
   (import (vicare)
     (vicare speech-tools flite constants)
-    (prefix (vicare speech-tools flite unsafe-capi)
-	    capi.)
-    (prefix (vicare ffi)
-	    ffi.)
-    (prefix (vicare ffi foreign-pointer-wrapper)
-	    ffi.)
+    (prefix (vicare speech-tools flite unsafe-capi) capi.)
+    #;(prefix (vicare ffi) ffi.)
+    (prefix (vicare ffi foreign-pointer-wrapper) ffi.)
     (vicare arguments validation)
+    (vicare arguments general-c-buffers)
     #;(prefix (vicare platform words) words.))
 
 
@@ -67,6 +81,12 @@
 #;(define-argument-validation (fixnum who obj)
   (fixnum? obj)
   (assertion-violation who "expected fixnum as argument" obj))
+
+
+;;;; library initialisation
+
+(define (flite-init)
+  (capi.flite-init))
 
 
 ;;;; version functions
@@ -84,24 +104,85 @@
   (ascii->string (capi.vicare-flite-version)))
 
 
-;;;; data structures
+;;;; voice handling
 
-(ffi.define-foreign-pointer-wrapper cst-voice
+;;NOTE Flite  is really  underdocumented, so this  is just  guessing and
+;;trying to cope with the current and future releases.
+;;
+;;As of Flite  version 1.4: the structure  "cst_voice" representing each
+;;voice is built and initialised once  by Flite; every time we request a
+;;specific voice struct: the same  "cst_voice" is returned.  There is no
+;;finalisation for voice foreign structures.
+;;
+(ffi.define-foreign-pointer-wrapper flite-voice
   (ffi.foreign-destructor #f)
+  ;;Commented  out  because there  is  no  finalisation for  FLITE-VOICE
+  ;;structures; but kept here just in case, in future, there is the need
+  ;;to introduce it.
+  ;;
+  #;(ffi.foreign-destructor capi.flite-voice-finalise)
   (ffi.collector-struct-type #f))
+
+(module ()
+  (define (%printer S port sub-printer)
+    (define-inline (%display thing)
+      (display thing port))
+    (define-inline (%write thing)
+      (write thing port))
+    (%display "#[flite-voice")
+    (%display " pointer=")	(%display ($flite-voice-pointer  S))
+    (%display " name=")		(%write   (capi.flite-voice-name S))
+    (%display "]"))
+
+  (set-rtd-printer! (type-descriptor flite-voice) %printer))
+
+;;; --------------------------------------------------------------------
+
+(define flite-voice-select
+  (case-lambda
+   (()
+    (flite-voice-select "rms"))
+   ((voice-name)
+    (define who 'flite-voice-select)
+    (with-arguments-validation (who)
+	((general-c-string	voice-name))
+      (with-general-c-strings
+	  ((voice-name^	voice-name))
+	(let ((rv (capi.flite-voice-select voice-name^)))
+	  (if rv
+	      (make-flite-voice/not-owner rv)
+	    (error who "unable to create voice object" voice-name))))))
+   ))
+
+(define (flite-voice-finalise voice)
+  (define who 'flite-voice-finalise)
+  (with-arguments-validation (who)
+      ((flite-voice	voice))
+    ($flite-voice-finalise voice)))
+
+;;; --------------------------------------------------------------------
+
+(define (flite-voice-name voice)
+  (define who 'flite-voice-name)
+  (with-arguments-validation (who)
+      ((flite-voice	voice))
+    (capi.flite-voice-name voice)))
+
+(define (flite-voice-add-lex-addenda ctx)
+  (define who 'flite-voice-add-lex-addenda)
+  (with-arguments-validation (who)
+      ()
+    (capi.flite-voice-add-lex-addenda)))
+
+
+;;;; wav files
 
 (ffi.define-foreign-pointer-wrapper cst-wave
   (ffi.foreign-destructor #f)
   (ffi.collector-struct-type #f))
 
 
-;;;; Flite
-
-(define (flite-init ctx)
-  (define who 'flite-init)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-init)))
+;;;; Still to be implemented
 
 (define (flite-text-to-wave ctx)
   (define who 'flite-text-to-wave)
@@ -132,18 +213,6 @@
   (with-arguments-validation (who)
       ()
     (capi.flite-synth-phones)))
-
-(define (flite-voice-select ctx)
-  (define who 'flite-voice-select)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-voice-select)))
-
-(define (flite-voice-add-lex-addenda ctx)
-  (define who 'flite-voice-add-lex-addenda)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-voice-add-lex-addenda)))
 
 
 ;;;; done

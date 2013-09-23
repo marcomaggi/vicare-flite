@@ -30,10 +30,13 @@
   (vicare speech-tools flite)
   (vicare speech-tools flite constants)
 ;;;  (prefix (vicare ffi) ffi.)
+  (vicare arguments validation)
   (vicare checks))
 
 (check-set-mode! 'report-failed)
 (check-display "*** testing Vicare Flite bindings\n")
+
+(flite-init)
 
 
 ;;;; helpers
@@ -59,6 +62,151 @@
     => #t)
 
   #t)
+
+
+(parametrise ((check-test-name		'voice-struct)
+	      (struct-guardian-logger	#f))
+
+  (define who 'test)
+
+;;; --------------------------------------------------------------------
+
+  (check	;this will be garbage collected
+      (let ((voice (flite-voice-select "rms")))
+	;;;(debug-print voice)
+	(flite-voice? voice))
+    => #t)
+
+  (check
+      (flite-voice?/alive (flite-voice-select "rms"))
+    => #t)
+
+  (check	;single finalisation
+      (let ((voice (flite-voice-select "rms")))
+  	(flite-voice-finalise voice))
+    => #f)
+
+  (check	;double finalisation
+      (let ((voice (flite-voice-select "rms")))
+  	(flite-voice-finalise voice)
+  	(flite-voice-finalise voice))
+    => #f)
+
+  (check	;alive predicate after finalisation
+      (let ((voice (flite-voice-select "rms")))
+  	(flite-voice-finalise voice)
+  	(flite-voice?/alive voice))
+    => #f)
+
+;;; --------------------------------------------------------------------
+;;; destructor
+
+  (check
+      (with-result
+       (let ((voice (flite-voice-select "rms")))
+	 (set-flite-voice-custom-destructor! voice (lambda (voice)
+						     (add-result 123)))
+	 (flite-voice-finalise voice)))
+    => '(#f (123)))
+
+;;; --------------------------------------------------------------------
+;;; hash
+
+  (check-for-true
+   (integer? (flite-voice-hash (flite-voice-select "rms"))))
+
+  (check
+      (let ((A (flite-voice-select))
+	    (B (flite-voice-select))
+	    (T (make-hashtable flite-voice-hash eq?)))
+	(hashtable-set! T A 1)
+	(hashtable-set! T B 2)
+	(list (hashtable-ref T A #f)
+	      (hashtable-ref T B #f)))
+    => '(1 2))
+
+;;; --------------------------------------------------------------------
+;;; properties
+
+  (check
+      (let ((S (flite-voice-select "rms")))
+	(flite-voice-property-list S))
+    => '())
+
+  (check
+      (let ((S (flite-voice-select "rms")))
+	(flite-voice-putprop S 'ciao 'salut)
+	(flite-voice-getprop S 'ciao))
+    => 'salut)
+
+  (check
+      (let ((S (flite-voice-select "rms")))
+	(flite-voice-getprop S 'ciao))
+    => #f)
+
+  (check
+      (let ((S (flite-voice-select "rms")))
+	(flite-voice-putprop S 'ciao 'salut)
+	(flite-voice-remprop S 'ciao)
+	(flite-voice-getprop S 'ciao))
+    => #f)
+
+  (check
+      (let ((S (flite-voice-select "rms")))
+	(flite-voice-putprop S 'ciao 'salut)
+	(flite-voice-putprop S 'hello 'ohayo)
+	(list (flite-voice-getprop S 'ciao)
+	      (flite-voice-getprop S 'hello)))
+    => '(salut ohayo))
+
+;;; --------------------------------------------------------------------
+;;; arguments validation
+
+  (check-for-true
+   (let ((S (flite-voice-select "rms")))
+     (with-arguments-validation (who)
+	 ((flite-voice	S))
+       #t)))
+
+  (check-for-true
+   (let ((S (flite-voice-select "rms")))
+     (flite-voice-finalise S)
+     (with-arguments-validation (who)
+	 ((flite-voice	S))
+       #t)))
+
+  (check-for-true
+   (let ((S (flite-voice-select "rms")))
+     (with-arguments-validation (who)
+	 ((flite-voice/alive	S))
+       #t)))
+
+;;;
+
+  (check-for-procedure-argument-violation
+   (let ((S 123))
+     (with-arguments-validation (who)
+	 ((flite-voice	S))
+       #t))
+   '(123))
+
+  (check-for-procedure-argument-violation
+   (let ((S 123))
+     (with-arguments-validation (who)
+	 ((flite-voice/alive	S))
+       #t))
+   '(123))
+
+  (let ((S (flite-voice-select "rms")))
+    (check-for-procedure-argument-violation
+     (begin
+       (flite-voice-finalise S)
+       (with-arguments-validation (who)
+	   ((flite-voice/alive	S))
+	 #t))
+     (list S)))
+
+  (collect))
 
 
 ;;;; done

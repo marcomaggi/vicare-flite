@@ -53,7 +53,7 @@
 @end macro
 
 @macro flite{}
-@acronym{FLITE}
+@acronym{Flite}
 @end macro
 
 @c page
@@ -141,7 +141,6 @@ entitled ``@gnu{} Free Documentation License''.
 
 @menu
 * overview::                    Overview of the package.
-* version::                     Flite version informations.
 * plain::                       Plain programming interface.
 
 Appendices
@@ -194,18 +193,20 @@ The following Scheme libraries are installed:
 @item vicare speech-tools flite
 @cindex Library @library{vicare speech-tools flite}
 @cindex @library{vicare speech-tools flite}, library
-It exports one binding for each @value{FOREIGN_PACKAGE} public function.
-All the Scheme function names are directly derived from the C function
-names by replacing underscore characters @samp{_} with dash characters
-@samp{-}; so @cfunc{flite_init} becomes @func{flite-init}.
+It exports one binding for some @value{FOREIGN_PACKAGE} public
+functions.  Mos of the Scheme function names are directly derived from
+the C function names by replacing underscore characters @samp{_} with
+dash characters @samp{-}; so @cfunc{flite_init} becomes
+@func{flite-init}.
 
 @item vicare speech-tools flite unsafe-capi
 @cindex Library @library{vicare speech-tools flite unsafe-capi}
 @cindex @library{vicare speech-tools flite unsafe-capi}, library
-It exports one syntax binding for each @value{FOREIGN_PACKAGE} public
-function.  All the Scheme syntax names are directly derived from the C
-function names by replacing underscore characters @samp{_} with dash
-characters @samp{-}; so @cfunc{flite_init} becomes @func{flite-init}.
+It exports one syntax binding for some @value{FOREIGN_PACKAGE} public
+functions.  Most of the Scheme syntax names are directly derived from
+the C function names by replacing underscore characters @samp{_} with
+dash characters @samp{-}; so @cfunc{flite_init} becomes
+@func{flite-init}.
 
 These syntaxes expand to a direct call to the C language wrapper
 functions in the @value{PACKAGE} library; they are not meant to be
@@ -248,8 +249,33 @@ This document contains only a brief description of the functions: refer
 to the @value{FOREIGN_PACKAGE}'s documentation for details.
 
 @c page
-@node version
-@chapter @value{FOREIGN_PACKAGE} version informations
+@node plain
+@chapter Plain programming interface
+
+
+@cindex Library @library{vicare speech-tools flite}
+@cindex @library{vicare speech-tools flite}, library
+
+
+The library @library{vicare speech-tools flite} implements the high
+level @api{} for @value{FOREIGN_PACKAGE}.  It is suggested to import
+this library with the prefix @samp{flite.} as in:
+
+@example
+(import (vicare)
+  (prefix (vicare speech-tools flite) flite.))
+@end example
+
+@menu
+* plain version::               @value{PACKAGE} version informations.
+* plain init::                  Library initialisation.
+* plain voice::                 Voice selection and handling.
+* plain misc::                  Miscellaneous operations.
+@end menu
+
+@c page
+@node plain version
+@section @value{PACKAGE} version informations
 
 
 The installed C library follows version numbering as established by the
@@ -273,12 +299,8 @@ Return a Scheme string representing the version number.
 @end defun
 
 @c page
-@node plain
-@chapter Plain programming interface
-
-
-@cindex Library @library{vicare speech-tools flite}
-@cindex @library{vicare speech-tools flite}, library
+@node plain init
+@section Library initialisation
 
 
 The following bindings are exported by the library @library{vicare
@@ -286,7 +308,196 @@ speech-tools flite}.
 
 
 @defun flite-init
+Initialise the library.  This function must be called before performing
+any other operation with @value{PACKAGE}.
 @end defun
+
+@c page
+@node plain voice
+@section Voice selection and handling
+
+
+@menu
+* plain voice struct::          Voice data structure.
+* plain voice ops::             Operating on voice objects.
+@end menu
+
+@c page
+@node plain voice struct
+@subsection Voice data structure
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
+
+
+@deftp {Struct Type} flite-voice
+@cindex Argument @var{voice}
+@cindex @var{voice} argument
+Opaque structure type referencing an instance of the C language type
+@code{cst_voice}.
+
+When instances of this type are used as arguments to functions: this
+documentation identifies them as @var{voice}.
+
+Instances of this type must be finalised with @func{flite-voice-finalise};
+whenever an instance of this type is garbage collected:
+@func{flite-voice-finalise} is automatically applied to it and any error
+ignored.
+
+In certain contexts, instances of this type own the referenced
+@code{cst_voice} value, in other contexts they do not:
+
+@itemize
+@item
+Finalising a @objtype{flite-voice} instance owning the @code{cst_voice}
+value, causes finalisation of the @code{cst_voice} value too.
+
+@item
+Finalising a @objtype{flite-voice} instance @strong{not} owning the
+@code{cst_voice} value, leaves the @code{cst_voice} untouched.
+@end itemize
+
+@noindent
+this should happen transparently.
+@end deftp
+
+
+@defun flite-voice? @var{obj}
+Return @true{} if @var{obj} is an instance of @objtype{flite-voice};
+otherwise return @false{}.
+@end defun
+
+
+@defun flite-voice?/alive @var{obj}
+Return @true{} if @var{obj} is an instance of @objtype{flite-voice} and it
+has not been finalised; return @false{} otherwise.
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Object properties
+
+
+@defun flite-voice-putprop @var{voice} @var{key} @var{value}
+Add a new property @var{key} to the property list of @var{voice};
+@var{key} must be a symbol.  If @var{key} is already set: the old entry
+is mutated to reference the new @var{value}.
+@end defun
+
+
+@defun flite-voice-getprop @var{voice} @var{key}
+Return the value of the property @var{key} in the property list of
+@var{voice}; if @var{key} is not set: return @false{}.  @var{key} must
+be a symbol.
+@end defun
+
+
+@defun flite-voice-remprop @var{voice} @var{key}
+Remove the property @var{key} from the property list of @var{voice}; if
+@var{key} is not set: nothing happens.  @var{key} must be a symbol.
+@end defun
+
+
+@defun flite-voice-property-list @var{voice}
+Return a new association list representing the property list of
+@var{voice}.  The order of the entries is the same as the property
+creation order.
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Custom destructor
+
+
+@defun voice-custom-destructor @var{voice}
+@defunx set-voice-custom-destructor! @var{voice} @var{func}
+Retrieve or set a destructor function associated to @var{voice}.
+
+Whenever @var{voice} is finalised, either explicitly with
+@func{flite-voice-finalise} or implicitly by the garbage collector,
+@var{func} is applied to @var{voice} before the internal state of
+@var{voice} is destroyed.
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Other operations
+
+
+@defun flite-voice-hash @var{voice}
+Return an exact integer to be used as hashtable key for @var{voice}.
+Hashtables having a @objtype{flite-voice} as key can be instantiated as
+follows:
+
+@example
+(make-hashtable flite-voice-hash eq?)
+@end example
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Arguments validation
+
+
+The following bindings are meant to be used with the facilities of the
+library @library{vicare arguments validation}.
+
+
+@deffn {Validation Clause} flite-voice @var{obj}
+@deffnx {Validation Clause} false-or-flite-voice @var{obj}
+Succeed if @var{obj} satisfies the predicate @func{flite-voice?}; the
+second clause also accepts @false{}.
+@end deffn
+
+
+@deffn {Validation Clause} flite-voice/alive @var{obj}
+@deffnx {Validation Clause} false-or-flite-voice/alive @var{obj}
+Succeed if @var{obj} satisfies the predicate @func{flite-voice?/alive};
+the second clause also accepts @false{}.
+@end deffn
+
+@c page
+@node plain voice ops
+@subsection Operating on voice objects
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
+
+
+@defun flite-voice-select
+@defunx flite-voice-select @var{voice-name}
+Build and return a new @objtype{flite-voice} object making use of the
+specified voice; if an error occurs raise an exception.
+
+@var{voice-name} must be a generalised C string holding the name of a
+voice, @cbuffersref{}.  It defaults to the string @code{"rms"}.
+@end defun
+
+
+@defun flite-voice-finalise @var{voice}
+Finalise @var{voice}; return unspecified values.  It is fine to apply
+this function multiple times to the same @var{voice} value: the first
+time the underlying data is finalised, the subsequent times nothing
+happens.
+
+If this function is applied to an @var{voice} value not owning the
+underlying @code{cst_voice} value: @var{voice} is finalised, but the
+@code{cst_voice} value is left alone.
+@end defun
+
+
+@defun flite-voice-add-lex-addenda
+@end defun
+
+@c page
+@node plain misc
+@section Miscellaneous operations
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
 
 
 @defun flite-text-to-wave
@@ -306,14 +517,6 @@ speech-tools flite}.
 
 
 @defun flite-synth-phones
-@end defun
-
-
-@defun flite-voice-select
-@end defun
-
-
-@defun flite-voice-add-lex-addenda
 @end defun
 
 @c page
@@ -352,11 +555,6 @@ and as backup at:
 the home page of the Vicare project is at:
 
 @center @value{VICARE_HOMEPAGE_URL}
-
-@noindent
-the home page of the Nausicaa project is at:
-
-@center @value{NAUSICAA_HOMEPAGE_URL}
 
 @noindent
 @value{FOREIGN_PACKAGE} can be found here:

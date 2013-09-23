@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS		= -I autotools
 AUTOMAKE_OPTIONS	= foreign
 SUBDIRS			= src doc tests lib
 EXTRA_DIST		= INSTALL configure.sh
-dist_doc_DATA		= README COPYING
+dist_doc_DATA		= README COPYING COPYING.flite
 
 vicare_test_RULES	= test tests demo demos test-vie test-run
 vicare_lib_RULES	= vfasl vfasl-installed

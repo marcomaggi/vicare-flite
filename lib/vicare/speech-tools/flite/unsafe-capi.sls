@@ -31,13 +31,17 @@
 
     ;; Flite unsafe C API
     flite-init
-    flite-text-to-wave
-    flite-file-to-speech
-    flite-text-to-speech
-    flite-synth-text
-    flite-synth-phones
+
+    ;; voice handling
     flite-voice-select
+    flite-voice-name
     flite-voice-add-lex-addenda
+
+    ;;Commented  out because  there is  no finalisation  for FLITE-VOICE
+    ;;structures; but  kept here just in  case, in future, there  is the
+    ;;need to introduce it.
+    ;;
+    #;flite-voice-finalise
 
     ;; version functions
     vicare-flite-version-interface-current
@@ -48,6 +52,11 @@
 ;;; --------------------------------------------------------------------
 ;;; still to be implemented
 
+    flite-text-to-wave
+    flite-file-to-speech
+    flite-text-to-speech
+    flite-synth-text
+    flite-synth-phones
     )
   (import (vicare))
 
@@ -67,10 +76,34 @@
   (foreign-call "ikrt_flite_version"))
 
 
-;;;; Flite unsafe C API
+;;;; library initialisation
 
 (define-inline (flite-init)
   (foreign-call "ikrt_flite_init"))
+
+
+;;;; voice handling
+
+(define-inline (flite-voice-select voice)
+  (foreign-call "ikrt_flite_voice_select" voice))
+
+;;Commented  out  because  there  is  no  finalisation  for  FLITE-VOICE
+;;structures; but kept  here just in case, in future,  there is the need
+;;to introduce it.
+;;
+;; (define-inline (flite-voice-finalise voice)
+;;   (foreign-call "ikrt_flite_voice_finalise" voice))
+
+;;; --------------------------------------------------------------------
+
+(define-inline (flite-voice-name voice)
+  (foreign-call "ikrt_flite_voice_name" voice))
+
+(define-inline (flite-voice-add-lex-addenda)
+  (foreign-call "ikrt_flite_voice_add_lex_addenda"))
+
+
+;;;; still not implemented
 
 (define-inline (flite-text-to-wave)
   (foreign-call "ikrt_flite_text_to_wave"))
@@ -86,12 +119,6 @@
 
 (define-inline (flite-synth-phones)
   (foreign-call "ikrt_flite_synth_phones"))
-
-(define-inline (flite-voice-select)
-  (foreign-call "ikrt_flite_voice_select"))
-
-(define-inline (flite-voice-add-lex-addenda)
-  (foreign-call "ikrt_flite_voice_add_lex_addenda"))
 
 
 ;;;; done

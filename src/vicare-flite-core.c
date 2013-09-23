@@ -40,6 +40,15 @@ ikrt_flite_init (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_INIT
   flite_init();
+  /* Are these register functions needed?   Maybe not, but who knowns in
+     such an undocumented package? */
+  register_cmu_time_awb(NULL);
+  register_cmu_us_awb(NULL);
+  register_cmu_us_kal(NULL);
+  register_cmu_us_kal16(NULL);
+  register_cmu_us_rms(NULL);
+  register_cmu_us_slt(NULL);
+  /* This is needed to initialise the list of voices. */
   ik_imported_flite_set_voice_list();
   return IK_VOID;
 #else
@@ -67,8 +76,19 @@ ikrt_flite_voice_select (ikptr s_voice_name, ikpcb * pcb)
   feature_failure(__func__);
 #endif
 }
+
+#if 0
+/* Commented  out  because  there  is no  finalisation  for  FLITE-VOICE
+   structures; but kept here just in  case, in future, there is the need
+   to introduce it. */
 ikptr
 ikrt_flite_voice_finalise (ikptr s_voice, ikpcb * pcb)
+/* NOTE Flite  is really underdocumented,  so this is just  guessing and
+   trying  to cope  with it.
+
+   As of Flite version 1.4:  the structure "cst_voice" representing each
+   voice is built and initialised once by Flite; every time we request a
+   specific voice struct: the same "cst_voice" is returned. */
 {
   ikptr		s_pointer	= IK_FLITE_VOICE_POINTER(s_voice);
   if (ik_is_pointer(s_pointer)) {
@@ -82,6 +102,10 @@ ikrt_flite_voice_finalise (ikptr s_voice, ikpcb * pcb)
      always false. */
   return IK_FALSE;
 }
+#endif
+
+/* ------------------------------------------------------------------ */
+
 ikptr
 ikrt_flite_voice_name (ikptr s_voice, ikpcb * pcb)
 {
