@@ -142,6 +142,7 @@ entitled ``@gnu{} Free Documentation License''.
 @menu
 * overview::                    Overview of the package.
 * plain::                       Plain programming interface.
+* nau::                         Nausicaa programming interface.
 
 Appendices
 
@@ -426,8 +427,8 @@ creation order.
 @subsubheading Custom destructor
 
 
-@defun voice-custom-destructor @var{voice}
-@defunx set-voice-custom-destructor! @var{voice} @var{func}
+@defun flite-voice-custom-destructor @var{voice}
+@defunx set-flite-voice-custom-destructor! @var{voice} @var{func}
 Retrieve or set a destructor function associated to @var{voice}.
 
 Whenever @var{voice} is finalised, either explicitly with
@@ -594,6 +595,19 @@ speech-tools flite}.
 
 @defun flite-synth-phones
 @end defun
+
+@c page
+@node nau
+@chapter Nausicaa programming interface
+
+
+@cindex Library @library{nausicaa speech-tools flite}
+@cindex @library{nausicaa speech-tools flite}, library
+
+
+The library @library{nausicaa speech-tools flite} implements an
+interface to @library{vicare speech-tools flite} on top of the
+@library{nausicaa} language.
 
 @c page
 @c ------------------------------------------------------------

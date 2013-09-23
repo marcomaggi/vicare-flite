@@ -27,13 +27,34 @@
 
 #!r6rs
 (library (nausicaa speech-tools flite)
-  (export flite-init)
+  (export
+    flite-init
+    <flite-voice>
+    flite-voice.vicare-arguments-validation
+    flite-voice/alive.vicare-arguments-validation
+    false-or-flite-voice.vicare-arguments-validation
+    false-or-flite-voice/alive.vicare-arguments-validation
+
+    )
   (import (nausicaa)
     (vicare speech-tools flite))
 
 
-;;;; code
-
+(define-label <flite-voice>
+  (predicate flite-voice?)
+  (protocol (lambda () flite-voice-select))
+  (virtual-fields (mutable destructor flite-voice-custom-destructor set-flite-voice-custom-destructor!))
+  (methods (alive?		flite-voice?/alive)
+	   (putprop		flite-voice-putprop)
+	   (getprop		flite-voice-getprop)
+	   (remprop		flite-voice-remprop)
+	   (property-list	flite-voice-property-list)
+	   (hash		flite-voice-hash)
+	   (finalise		flite-voice-finalise)
+	   (name		flite-voice-name)
+	   )
+  (method (play (V <flite-voice>) (T <string>))
+    (flite-text-to-speech T V "play")))
 
 
 ;;;; done
