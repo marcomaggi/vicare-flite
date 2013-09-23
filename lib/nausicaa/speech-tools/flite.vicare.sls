@@ -55,8 +55,11 @@
 	   (finalise		flite-voice-finalise)
 	   (name		flite-voice-name)
 	   )
-  (method (play (V <flite-voice>) (T <string>))
-    (flite-text-to-speech T V "play")))
+  (method (play-text (V <flite-voice>) (T <string>))
+    (flite-text-to-speech T V "play"))
+  (method (play-file (V <flite-voice>) (F <string>))
+    (flite-file-to-speech F V "play"))
+  )
 
 
 ;;;; done

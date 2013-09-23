@@ -213,25 +213,25 @@
 
   (check-for-true
    (let (((voice <flite-voice>) (<flite-voice> ("rms"))))
-     (flonum? (voice play "rms voice"))))
+     (flonum? (voice play-text "rms voice"))))
 
   (check-for-true
    (let (((voice <flite-voice>) (<flite-voice> ("slt"))))
-     (flonum? (voice play "slt voice"))))
+     (flonum? (voice play-text "slt voice"))))
 
   (check-for-true
    (let (((voice <flite-voice>) (<flite-voice> ("kal"))))
-     (flonum? (voice play "kal voice"))))
+     (flonum? (voice play-text "kal voice"))))
 
   (check-for-true
    (let (((voice <flite-voice>) (<flite-voice> ("awb"))))
-     (flonum? (voice play "awb voice"))))
+     (flonum? (voice play-text "awb voice"))))
 
 ;;; --------------------------------------------------------------------
 
-;;   (check-for-true
-;;    (let ((voice (flite-voice-select)))
-;;      (flonum? (flite-text-to-speech "text to speech play" voice "play"))))
+  (check-for-true
+   (let (((voice <flite-voice>) (<flite-voice> ())))
+     (flonum? (voice play-text "text to speech play"))))
 
 ;;   (check
 ;;       (let ((voice (flite-voice-select)))
@@ -257,18 +257,18 @@
 
 ;; ;;; --------------------------------------------------------------------
 
-;;   (check
-;;       (let ((voice (flite-voice-select)))
-;; 	(when (file-exists? "proof-03.txt")
-;; 	  (delete-file "proof-03.txt"))
-;; 	(with-output-to-file "proof-03.txt"
-;; 	  (lambda ()
-;; 	    (display "file to speech test")))
-;; 	(receive-and-return (bool)
-;; 	    (flonum? (flite-file-to-speech "proof-03.txt" voice "play"))
-;; 	  (when (file-exists? "proof-03.txt")
-;; 	    (delete-file "proof-03.txt"))))
-;;     => #t)
+  (check
+      (let (((voice <flite-voice>) (<flite-voice> ())))
+	(when (file-exists? "proof-03.txt")
+	  (delete-file "proof-03.txt"))
+	(with-output-to-file "proof-03.txt"
+	  (lambda ()
+	    (display "file to speech test")))
+	(receive-and-return (bool)
+	    (flonum? (voice play-file "proof-03.txt"))
+	  (when (file-exists? "proof-03.txt")
+	    (delete-file "proof-03.txt"))))
+    => #t)
 
   (collect))
 

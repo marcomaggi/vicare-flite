@@ -44,7 +44,7 @@
   (let ()
 
     (flite.<flite-voice> voice (<> ("slt")))
-    (voice play "text to speech play")
+    (voice play-text "text to speech play")
 
     (void)))
 

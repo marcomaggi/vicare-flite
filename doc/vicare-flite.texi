@@ -774,8 +774,8 @@ Return a Scheme string representing the name of the given instance.
 @end defmethod
 
 
-@defmethod @aclass{flite-voice} play @var{text}
-Process the given text and produce some output using the instance voice.
+@defmethod @aclass{flite-voice} play-text @var{text}
+Process the given text and play the result using the instance voice.
 Return a flonum representing the number of seconds of generated output.
 
 @var{text} must be a generalised C string holding the text to process,
@@ -788,8 +788,17 @@ Return a flonum representing the number of seconds of generated output.
 (flite.flite-init)
 
 (flite.<flite-voice> voice (<> ("slt")))
-(voice play "text to speech play")
+(voice play-text "text to speech play")
 @end example
+@end defmethod
+
+
+@defmethod @aclass{flite-voice} play-file @var{filename}
+Process text from a file and play the result using the instance voice.
+Return a flonum representing the number of seconds of generated output.
+
+@var{filename} must be a generalised C string holding the text to
+process, @cbuffersref{}.
 @end defmethod
 
 @c page
