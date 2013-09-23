@@ -299,6 +299,21 @@ Return a fixnum representing a version number.
 Return a Scheme string representing the version number.
 @end defun
 
+
+The following bindings are exported by @library{vicare speech-tools
+flite constants}.
+
+
+@defvr {Inline Constant} FLITE_PROJECT_NAME
+@defvrx {Inline Constant} FLITE_PROJECT_PREFIX
+@defvrx {Inline Constant} FLITE_PROJECT_VERSION
+@defvrx {Inline Constant} FLITE_PROJECT_DATE
+@defvrx {Inline Constant} FLITE_PROJECT_STATE
+@defvrx {Inline Constant} FLITE_PROJECT_SHLIB_VERSION
+Scheme strings representing @value{FOREIGN_PACKAGE} version
+informations.
+@end defvr
+
 @c page
 @node plain init
 @section Library initialisation

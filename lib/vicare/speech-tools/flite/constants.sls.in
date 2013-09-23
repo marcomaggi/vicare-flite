@@ -26,9 +26,12 @@
 
 (library (vicare speech-tools flite constants)
   (export
-
-    THE_FLITE
-
+    FLITE_PROJECT_NAME
+    FLITE_PROJECT_PREFIX
+    FLITE_PROJECT_VERSION
+    FLITE_PROJECT_DATE
+    FLITE_PROJECT_STATE
+    FLITE_PROJECT_SHLIB_VERSION
     )
   (import (rename (only (vicare)
 			define-inline-constant)
@@ -37,11 +40,12 @@
 
 ;;;; constants
 
-;;; Preprocessor symbols: XML_Bool
-;;(defc XML_TRUE		@VALUEOF_XML_TRUE@)
-
-(defc THE_FLITE		123)
-
+(defc FLITE_PROJECT_NAME		"@VALUEOF_FLITE_PROJECT_NAME@")
+(defc FLITE_PROJECT_PREFIX		"@VALUEOF_FLITE_PROJECT_PREFIX@")
+(defc FLITE_PROJECT_VERSION		"@VALUEOF_FLITE_PROJECT_VERSION@")
+(defc FLITE_PROJECT_DATE		"@VALUEOF_FLITE_PROJECT_DATE@")
+(defc FLITE_PROJECT_STATE		"@VALUEOF_FLITE_PROJECT_STATE@")
+(defc FLITE_PROJECT_SHLIB_VERSION	"@VALUEOF_FLITE_PROJECT_SHLIB_VERSION@")
 
 
 ;;;; done

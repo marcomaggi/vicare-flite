@@ -40,6 +40,8 @@ AC_DEFINE([_GNU_SOURCE],[1],[enable everything GNU])
 
 AC_CHECK_HEADERS([flite/flite.h],,
   [AC_MSG_FAILURE([missing flite.h header],[2])])
+AC_CHECK_HEADERS([flite/flite_version.h],,
+  [AC_MSG_FAILURE([missing flite_version.h header],[2])])
 
 dnl Beware of the order of the libraries!!!
 
@@ -85,13 +87,16 @@ AC_INCLUDES_DEFAULT
 #ifdef HAVE_VICARE_H
 #  include <vicare.h>
 #endif
-#ifdef HAVE_FLITE_H
+#ifdef HAVE_FLITE_FLITE_H
 #  include <flite/flite.h>
+#endif
+#ifdef HAVE_FLITE_FLITE_VERSION_H
+#  include <flite/flite_version.h>
 #endif
 ])
 
-dnl Stuff
-dnl VICARE_CONSTANT_TESTS([XML_TRUE XML_FALSE])
+dnl Version constants
+VICARE_STRING_CONSTANT_TESTS([FLITE_PROJECT_NAME FLITE_PROJECT_PREFIX FLITE_PROJECT_VERSION FLITE_PROJECT_DATE FLITE_PROJECT_STATE FLITE_PROJECT_SHLIB_VERSION])
 
 #page
 #### C language functions from the header file "libesmtp.h"
