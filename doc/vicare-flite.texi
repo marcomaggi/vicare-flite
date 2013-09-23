@@ -472,7 +472,9 @@ Build and return a new @objtype{flite-voice} object making use of the
 specified voice; if an error occurs raise an exception.
 
 @var{voice-name} must be a generalised C string holding the name of a
-voice, @cbuffersref{}.  It defaults to the string @code{"rms"}.
+voice, @cbuffersref{}.  It defaults to the string @code{"rms"}.  If the
+selected voice name does not match an available one: a default voice is
+automatically selected.
 @end defun
 
 
@@ -485,6 +487,24 @@ happens.
 If this function is applied to an @var{voice} value not owning the
 underlying @code{cst_voice} value: @var{voice} is finalised, but the
 @code{cst_voice} value is left alone.
+@end defun
+
+
+@defun flite-voice-name @var{voice}
+Return a Scheme string representing the name of the given @var{voice}.
+@end defun
+
+
+@defun flite-available-voice-names
+Return a list of Scheme strings representing the names of the available
+voices.
+
+@example
+(import (vicare speech-tools flite))
+
+(flite-available-voice-names)
+@result{} ("slt" "rms" "kal16" "kal" "awb")
+@end example
 @end defun
 
 

@@ -49,6 +49,7 @@
     flite-voice-select
     flite-voice-finalise
     flite-voice-name
+    flite-available-voice-names
     flite-voice-add-lex-addenda
 
     ;; version numbers and strings
@@ -168,11 +169,38 @@
       ((flite-voice	voice))
     (capi.flite-voice-name voice)))
 
+(define (flite-available-voice-names)
+  (capi.flite-available-voice-names))
+
 (define (flite-voice-add-lex-addenda ctx)
   (define who 'flite-voice-add-lex-addenda)
   (with-arguments-validation (who)
       ()
     (capi.flite-voice-add-lex-addenda)))
+
+
+;;;; text to speech
+
+(define (flite-file-to-speech file voice outtype)
+  (define who 'flite-file-to-speech)
+  (with-arguments-validation (who)
+      ((general-c-string	file)
+       (flite-voice/alive	voice)
+       (string			outtype))
+    (with-general-c-strings
+	((file^	file))
+      (capi.flite-file-to-speech file^ voice outtype))))
+
+(define (flite-text-to-speech text voice outtype)
+  (define who 'flite-text-to-speech)
+  (with-arguments-validation (who)
+      ((general-c-string	text)
+       (flite-voice/alive	voice)
+       (string			outtype))
+    (with-general-c-strings
+	((text^		text)
+	 (outtype^	outtype))
+      (capi.flite-text-to-speech text^ voice outtype^))))
 
 
 ;;;; wav files
@@ -189,18 +217,6 @@
   (with-arguments-validation (who)
       ()
     (capi.flite-text-to-wave)))
-
-(define (flite-file-to-speech ctx)
-  (define who 'flite-file-to-speech)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-file-to-speech)))
-
-(define (flite-text-to-speech ctx)
-  (define who 'flite-text-to-speech)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-text-to-speech)))
 
 (define (flite-synth-text ctx)
   (define who 'flite-synth-text)

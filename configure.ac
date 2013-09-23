@@ -58,8 +58,10 @@ AC_CHECK_LIB([flite_usenglish],[main],,
 AC_CHECK_LIB([flite_cmu_us_kal],[main],,
   [AC_MSG_FAILURE([missing Flite library],[2])])
 
-AC_CHECK_LIB([flite_cmu_time_awb],[main],,
-  [AC_MSG_FAILURE([missing Flite library],[2])])
+dnl This is not a voice.
+dnl
+dnl AC_CHECK_LIB([flite_cmu_time_awb],[main],,
+dnl   [AC_MSG_FAILURE([missing Flite library],[2])])
 
 AC_CHECK_LIB([flite_cmu_us_kal16],[main],,
   [AC_MSG_FAILURE([missing Flite library],[2])])

@@ -209,6 +209,62 @@
   (collect))
 
 
+(parametrise ((check-test-name		'voice-ops))
+
+;;; voice name
+
+  (check
+      (let ((voice (flite-voice-select)))
+  	(flite-voice-name voice))
+    => "rms")
+
+  (check
+      (let ((voice (flite-voice-select "slt")))
+  	(flite-voice-name voice))
+    => "slt")
+
+  (check
+      (let ((voice (flite-voice-select "kal")))
+  	(flite-voice-name voice))
+    => "kal")
+
+  (check
+      (let ((voice (flite-voice-select "kal16")))
+  	(flite-voice-name voice))
+    => "kal16")
+
+  (check
+      (let ((voice (flite-voice-select "awb")))
+  	(flite-voice-name voice))
+    => "awb")
+
+;;; --------------------------------------------------------------------
+
+  (check-for-true
+   (let ((N (flite-available-voice-names)))
+     (check-pretty-print (list 'available-voices N))
+     (for-all string? N)))
+
+  #t)
+
+
+(parametrise ((check-test-name		'text-to-speech))
+
+  (check-for-true
+   (let ((voice (flite-voice-select "rms")))
+     (flonum? (flite-text-to-speech "hello world" voice "play"))))
+
+  (check-for-true
+   (let ((voice (flite-voice-select "slt")))
+     (flonum? (flite-text-to-speech "hello world" voice "play"))))
+
+  (check-for-true
+   (let ((voice (flite-voice-select "kal")))
+     (flonum? (flite-text-to-speech "hello world" voice "play"))))
+
+  #t)
+
+
 ;;;; done
 
 (check-report)

@@ -54,14 +54,25 @@
 
 
 /** --------------------------------------------------------------------
- ** Voices initialisation.
+ ** Voices handling.
  ** ----------------------------------------------------------------- */
 
 cst_val *
 ik_imported_flite_set_voice_list (void)
 {
+  /* fprintf(stderr, "%s: voice list %p\n", __func__, (void*)flite_voice_list); */
+#if 0
   flite_voice_list = cons_val(voice_val(register_cmu_us_slt(NULL)),flite_voice_list);
   flite_voice_list = val_reverse(flite_voice_list);
+#endif
+  flite_voice_list = NULL;
+  /* cons_val(voice_val(register_cmu_time_awb(NULL)),flite_voice_list); */
+  flite_voice_list = cons_val(voice_val(register_cmu_us_awb(NULL)),	flite_voice_list);
+  flite_voice_list = cons_val(voice_val(register_cmu_us_kal(NULL)),	flite_voice_list);
+  flite_voice_list = cons_val(voice_val(register_cmu_us_kal16(NULL)),	flite_voice_list);
+  flite_voice_list = cons_val(voice_val(register_cmu_us_rms(NULL)),	flite_voice_list);
+  flite_voice_list = cons_val(voice_val(register_cmu_us_slt(NULL)),	flite_voice_list);
+  /* fprintf(stderr, "%s: voice list %p\n", __func__, (void*)flite_voice_list); */
   return flite_voice_list;
 }
 

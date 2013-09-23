@@ -35,6 +35,7 @@
     ;; voice handling
     flite-voice-select
     flite-voice-name
+    flite-available-voice-names
     flite-voice-add-lex-addenda
 
     ;;Commented  out because  there is  no finalisation  for FLITE-VOICE
@@ -99,20 +100,26 @@
 (define-inline (flite-voice-name voice)
   (foreign-call "ikrt_flite_voice_name" voice))
 
+(define-inline (flite-available-voice-names)
+  (foreign-call "ikrt_flite_available_voice_names"))
+
 (define-inline (flite-voice-add-lex-addenda)
   (foreign-call "ikrt_flite_voice_add_lex_addenda"))
+
+
+;;;; strings to speech
+
+(define-inline (flite-text-to-speech text voice outtype)
+  (foreign-call "ikrt_flite_text_to_speech" text voice outtype))
+
+(define-inline (flite-file-to-speech file voice outtype)
+  (foreign-call "ikrt_flite_file_to_speech" file voice outtype))
 
 
 ;;;; still not implemented
 
 (define-inline (flite-text-to-wave)
   (foreign-call "ikrt_flite_text_to_wave"))
-
-(define-inline (flite-file-to-speech)
-  (foreign-call "ikrt_flite_file_to_speech"))
-
-(define-inline (flite-text-to-speech)
-  (foreign-call "ikrt_flite_text_to_speech"))
 
 (define-inline (flite-synth-text)
   (foreign-call "ikrt_flite_synth_text"))

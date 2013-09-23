@@ -40,16 +40,9 @@ ikrt_flite_init (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_INIT
   flite_init();
-  /* Are these register functions needed?   Maybe not, but who knowns in
-     such an undocumented package? */
-  register_cmu_time_awb(NULL);
-  register_cmu_us_awb(NULL);
-  register_cmu_us_kal(NULL);
-  register_cmu_us_kal16(NULL);
-  register_cmu_us_rms(NULL);
-  register_cmu_us_slt(NULL);
   /* This is needed to initialise the list of voices. */
-  ik_imported_flite_set_voice_list();
+  flite_voice_list = ik_imported_flite_set_voice_list();
+  /* fprintf(stderr, "%s: voice list %p\n", __func__, (void*)flite_voice_list); */
   return IK_VOID;
 #else
   feature_failure(__func__);
@@ -67,6 +60,7 @@ ikrt_flite_voice_select (ikptr s_voice_name, ikpcb * pcb)
 #ifdef HAVE_FLITE_VOICE_SELECT
   const char *	voice_name = IK_GENERALISED_C_STRING(s_voice_name);
   cst_voice *	rv;
+  /* fprintf(stderr, "%s: voice %s\n", __func__, voice_name); */
   rv = flite_voice_select(voice_name);
   if (NULL != rv) {
     return ika_pointer_alloc(pcb, (ik_ulong)rv);
@@ -118,6 +112,73 @@ ikrt_flite_voice_name (ikptr s_voice, ikpcb * pcb)
   }
   return ika_string_from_cstring(pcb, "unknown-flite-voice");
 }
+ikptr
+ikrt_flite_available_voice_names (ikpcb * pcb)
+{
+  ikptr			s_list;
+  ikptr			s_spine;
+  cst_voice *		voice;
+  const cst_val *	v;
+  s_list = s_spine = ika_pair_alloc(pcb);
+  pcb->root0 = &s_list;
+  pcb->root1 = &s_spine;
+  {
+    /* fprintf(stderr, "%s: voice list %p\n", __func__, (void*)flite_voice_list); */
+    for (v=flite_voice_list; v; ) {
+      voice = val_voice(val_car(v));
+      /* fprintf(stderr, "%s: name %s\n", __func__, voice->name); */
+      IK_ASS(IK_CAR(s_spine), ika_string_from_cstring(pcb, voice->name));
+      v = val_cdr(v);
+      if (v) {
+	IK_ASS(IK_CDR(s_spine), ika_pair_alloc(pcb));
+	s_spine = IK_CDR(s_spine);
+      } else {
+	IK_CDR(s_spine) = IK_NULL_OBJECT;
+	break;
+      }
+    }
+  }
+  pcb->root0 = NULL;
+  pcb->root1 = NULL;
+  return s_list;
+}
+
+
+/** --------------------------------------------------------------------
+ ** Text to speech.
+ ** ----------------------------------------------------------------- */
+
+ikptr
+ikrt_flite_file_to_speech (ikptr s_file, ikptr s_voice, ikptr s_outtype, ikpcb * pcb)
+{
+#ifdef HAVE_FLITE_FILE_TO_SPEECH
+  const char *	file	= IK_GENERALISED_C_STRING(s_file);
+  cst_voice *	voice	= IK_FLITE_VOICE(s_voice);
+  const char *	outtype	= IK_GENERALISED_C_STRING(s_outtype);
+  float		rv;
+  /* fprintf(stderr, "%s: file=%s, voice=%p, outtype=%s\n", __func__, file, (void*)voice, outtype); */
+  rv = flite_file_to_speech(file, voice, outtype);
+  return ika_flonum_from_double(pcb, (double)rv);
+#else
+  feature_failure(__func__);
+#endif
+}
+ikptr
+ikrt_flite_text_to_speech (ikptr s_text, ikptr s_voice, ikptr s_outtype, ikpcb * pcb)
+{
+#ifdef HAVE_FLITE_TEXT_TO_SPEECH
+  const char *	text	= IK_GENERALISED_C_STRING(s_text);
+  cst_voice *	voice	= IK_FLITE_VOICE(s_voice);
+  const char *	outtype	= IK_GENERALISED_C_STRING(s_outtype);
+  float		rv;
+  /* fprintf(stderr, "%s: text=%s, voice=%p, outtype=%s\n", __func__, text, (void*)voice, outtype); */
+  rv = flite_text_to_speech(text, voice, outtype);
+  return ika_flonum_from_double(pcb, (double)rv);
+  return IK_VOID;
+#else
+  feature_failure(__func__);
+#endif
+}
 
 
 ikptr
@@ -126,26 +187,6 @@ ikrt_flite_text_to_wave (ikpcb * pcb)
 #ifdef HAVE_FLITE_TEXT_TO_WAVE
 
   /* rv = flite_text_to_wave(); */
-  return IK_VOID;
-#else
-  feature_failure(__func__);
-#endif
-}
-ikptr
-ikrt_flite_file_to_speech (ikpcb * pcb)
-{
-#ifdef HAVE_FLITE_FILE_TO_SPEECH
-  /* rv = flite_file_to_speech(); */
-  return IK_VOID;
-#else
-  feature_failure(__func__);
-#endif
-}
-ikptr
-ikrt_flite_text_to_speech (ikpcb * pcb)
-{
-#ifdef HAVE_FLITE_TEXT_TO_SPEECH
-  /* rv = flite_text_to_speech(); */
   return IK_VOID;
 #else
   feature_failure(__func__);
