@@ -535,9 +535,9 @@ speech-tools flite}.
 
 
 @defun flite-file-to-speech @var{filename} @var{voice} @var{outtype}
-Read text from the selected file and produce some output using the
-selected voice.  Return a flonum representing the number of seconds of
-generated output.
+Read @strong{text} from the selected text file and produce some output
+using the selected voice.  Return a flonum representing the number of
+seconds of generated output.
 
 @var{filename} must be a generalised C string holding the name of an
 existent and readable file, @cbuffersref{}.
@@ -794,8 +794,9 @@ Return a flonum representing the number of seconds of generated output.
 
 
 @defmethod @aclass{flite-voice} play-file @var{filename}
-Process text from a file and play the result using the instance voice.
-Return a flonum representing the number of seconds of generated output.
+Process @strong{text} from a text file and play the result using the
+instance voice.  Return a flonum representing the number of seconds of
+generated output.
 
 @var{filename} must be a generalised C string holding the text to
 process, @cbuffersref{}.
