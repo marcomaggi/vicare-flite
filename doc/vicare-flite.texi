@@ -271,7 +271,7 @@ this library with the prefix @samp{flite.} as in:
 * plain init::                  Library initialisation.
 * plain voice::                 Voice selection and handling.
 * plain speech::                Text to speech.
-* plain misc::                  Miscellaneous operations.
+* plain not impl::              Still not implemented.
 @end menu
 
 @c page
@@ -523,10 +523,6 @@ voices.
 @end example
 @end defun
 
-
-@defun flite-voice-add-lex-addenda
-@end defun
-
 @c page
 @node plain speech
 @section Text to speech
@@ -576,12 +572,16 @@ the generated output.
 @end defun
 
 @c page
-@node plain misc
-@section Miscellaneous operations
+@node plain not impl
+@section Still not implemented
 
 
 The following bindings are exported by the library @library{vicare
 speech-tools flite}.
+
+
+@defun flite-voice-add-lex-addenda
+@end defun
 
 
 @defun flite-text-to-wave
