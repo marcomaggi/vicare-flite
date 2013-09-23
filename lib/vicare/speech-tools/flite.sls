@@ -186,17 +186,18 @@
   (with-arguments-validation (who)
       ((general-c-string	file)
        (flite-voice/alive	voice)
-       (string			outtype))
+       (general-c-string	outtype))
     (with-general-c-strings
-	((file^	file))
-      (capi.flite-file-to-speech file^ voice outtype))))
+	((file^		file)
+	 (outtype^	outtype))
+      (capi.flite-file-to-speech file^ voice outtype^))))
 
 (define (flite-text-to-speech text voice outtype)
   (define who 'flite-text-to-speech)
   (with-arguments-validation (who)
       ((general-c-string	text)
        (flite-voice/alive	voice)
-       (string			outtype))
+       (general-c-string	outtype))
     (with-general-c-strings
 	((text^		text)
 	 (outtype^	outtype))

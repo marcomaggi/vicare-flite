@@ -270,6 +270,7 @@ this library with the prefix @samp{flite.} as in:
 * plain version::               @value{PACKAGE} version informations.
 * plain init::                  Library initialisation.
 * plain voice::                 Voice selection and handling.
+* plain speech::                Text to speech.
 * plain misc::                  Miscellaneous operations.
 @end menu
 
@@ -512,6 +513,54 @@ voices.
 @end defun
 
 @c page
+@node plain speech
+@section Text to speech
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
+
+
+@defun flite-file-to-speech @var{filename} @var{voice} @var{outtype}
+Read text from the selected file and produce some output using the
+selected voice.  Return a flonum representing the number of seconds of
+generated output.
+
+@var{filename} must be a generalised C string holding the name of an
+existent and readable file, @cbuffersref{}.
+
+@var{outtype} must be a must be a generalised C string (@cbuffersref{})
+holding one of: @samp{play}, to play the generated audio; @samp{none},
+to discard the generated audio.
+@end defun
+
+
+@defun flite-text-to-speech @var{text} @var{voice} @var{outtype}
+Process the given text and produce some output using the selected voice.
+Return a flonum representing the number of seconds of generated output.
+
+@var{text} must be a generalised C string holding the text to process,
+@cbuffersref{}.
+
+@var{outtype} must be a must be a generalised C string (@cbuffersref{})
+holding one of: @samp{play}, to play the generated audio; @samp{none},
+to discard the generated audio; a the name of a file in which to save
+the generated output.
+
+@example
+(import (vicare)
+  (prefix (vicare speech-tools flite) flite.))
+
+(flite.flite-init)
+
+(define voice
+  (flite.flite-voice-select))
+
+(flite.flite-text-to-speech "text to speech play" voice "play")
+@end example
+@end defun
+
+@c page
 @node plain misc
 @section Miscellaneous operations
 
@@ -521,14 +570,6 @@ speech-tools flite}.
 
 
 @defun flite-text-to-wave
-@end defun
-
-
-@defun flite-file-to-speech
-@end defun
-
-
-@defun flite-text-to-speech
 @end defun
 
 

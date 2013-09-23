@@ -245,24 +245,71 @@
      (check-pretty-print (list 'available-voices N))
      (for-all string? N)))
 
-  #t)
+  (collect))
 
 
 (parametrise ((check-test-name		'text-to-speech))
 
   (check-for-true
    (let ((voice (flite-voice-select "rms")))
-     (flonum? (flite-text-to-speech "hello world" voice "play"))))
+     (flonum? (flite-text-to-speech "rms voice" voice "play"))))
 
   (check-for-true
    (let ((voice (flite-voice-select "slt")))
-     (flonum? (flite-text-to-speech "hello world" voice "play"))))
+     (flonum? (flite-text-to-speech "slt voice" voice "play"))))
 
   (check-for-true
    (let ((voice (flite-voice-select "kal")))
-     (flonum? (flite-text-to-speech "hello world" voice "play"))))
+     (flonum? (flite-text-to-speech "kal voice" voice "play"))))
 
-  #t)
+  (check-for-true
+   (let ((voice (flite-voice-select "awb")))
+     (flonum? (flite-text-to-speech "awb voice" voice "play"))))
+
+;;; --------------------------------------------------------------------
+
+  (check-for-true
+   (let ((voice (flite-voice-select)))
+     (flonum? (flite-text-to-speech "text to speech play" voice "play"))))
+
+  (check
+      (let ((voice (flite-voice-select)))
+	(when (file-exists? "proof-01.wav")
+	  (delete-file "proof-01.wav"))
+	(flite-text-to-speech "text to speech saved in file" voice "proof-01.wav")
+	(receive-and-return (bool)
+	    (file-exists? "proof-01.wav")
+	  (when bool
+	    (delete-file "proof-01.wav"))))
+    => #t)
+
+  (check
+      (let ((voice (flite-voice-select)))
+	(when (file-exists? "proof-02.wav")
+	  (delete-file "proof-02.wav"))
+	(flite-text-to-speech "text to wav file test" voice "proof-02.wav")
+	(receive-and-return (bool)
+	    (file-exists? "proof-02.wav")
+	  (when bool
+	    (delete-file "proof-02.wav"))))
+    => #t)
+
+;;; --------------------------------------------------------------------
+
+  (check
+      (let ((voice (flite-voice-select)))
+	(when (file-exists? "proof-03.txt")
+	  (delete-file "proof-03.txt"))
+	(with-output-to-file "proof-03.txt"
+	  (lambda ()
+	    (display "file to speech test")))
+	(receive-and-return (bool)
+	    (flonum? (flite-file-to-speech "proof-03.txt" voice "play"))
+	  (when (file-exists? "proof-03.txt")
+	    (delete-file "proof-03.txt"))))
+    => #t)
+
+  (collect))
 
 
 ;;;; done

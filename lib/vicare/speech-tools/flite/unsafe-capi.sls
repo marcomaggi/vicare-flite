@@ -37,12 +37,15 @@
     flite-voice-name
     flite-available-voice-names
     flite-voice-add-lex-addenda
-
     ;;Commented  out because  there is  no finalisation  for FLITE-VOICE
     ;;structures; but  kept here just in  case, in future, there  is the
     ;;need to introduce it.
     ;;
     #;flite-voice-finalise
+
+    ;; text to speech
+    flite-file-to-speech
+    flite-text-to-speech
 
     ;; version functions
     vicare-flite-version-interface-current
@@ -54,8 +57,6 @@
 ;;; still to be implemented
 
     flite-text-to-wave
-    flite-file-to-speech
-    flite-text-to-speech
     flite-synth-text
     flite-synth-phones
     )

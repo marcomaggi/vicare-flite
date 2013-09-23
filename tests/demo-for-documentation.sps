@@ -27,10 +27,10 @@
 
 #!r6rs
 (import (vicare)
-  (vicare speech-tools flite)
-  (vicare speech-tools flite constants)
-  #;(prefix (vicare ffi) ffi.)
-  #;(vicare language-extensions syntaxes))
+  (prefix (vicare speech-tools flite) flite.)
+  (prefix (vicare speech-tools flite constants) flite.))
+
+(flite.flite-init)
 
 
 ;;;; helpers
@@ -43,12 +43,24 @@
 
 (let ()
 
-  (%pretty-print (list (vicare-flite-version-interface-current)
-		       (vicare-flite-version-interface-revision)
-		       (vicare-flite-version-interface-age)
-		       (vicare-flite-version)))
+  (%pretty-print (list (flite.vicare-flite-version-interface-current)
+		       (flite.vicare-flite-version-interface-revision)
+		       (flite.vicare-flite-version-interface-age)
+		       (flite.vicare-flite-version)))
 
   #t)
+
+
+;;;; text to speech
+
+(when #t
+  (let ()
+
+    (define voice
+      (flite.flite-voice-select))
+    (flite.flite-text-to-speech "text to speech play" voice "play")
+
+    (void)))
 
 
 ;;;; done
