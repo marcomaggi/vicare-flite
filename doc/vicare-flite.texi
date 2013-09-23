@@ -150,16 +150,17 @@ Appendices
 * Documentation License::       GNU Free Documentation License.
 * references::                  Bibliography and references.
 
-External documents
-
-* flite: (flite).               Flite documentation.
-
 Indexes
 
 * concept index::               An entry for each concept.
 * function index::              An entry for each function.
 * variable index::              An entry for each variable.
 * type index::                  An entry for each type.
+
+External documents
+
+* flite: (flite).               Flite documentation.
+
 @end menu
 @end ifnottex
 
@@ -190,8 +191,8 @@ binding for each constant value defined in the C language header
 
 The following Scheme libraries are installed:
 
-@table @library
-@item vicare speech-tools flite
+@table @asis
+@item @library{vicare speech-tools flite}
 @cindex Library @library{vicare speech-tools flite}
 @cindex @library{vicare speech-tools flite}, library
 It exports one binding for some @value{FOREIGN_PACKAGE} public
@@ -200,7 +201,7 @@ the C function names by replacing underscore characters @samp{_} with
 dash characters @samp{-}; so @cfunc{flite_init} becomes
 @func{flite-init}.
 
-@item vicare speech-tools flite unsafe-capi
+@item @library{vicare speech-tools flite unsafe-capi}
 @cindex Library @library{vicare speech-tools flite unsafe-capi}
 @cindex @library{vicare speech-tools flite unsafe-capi}, library
 It exports one syntax binding for some @value{FOREIGN_PACKAGE} public
@@ -213,13 +214,13 @@ These syntaxes expand to a direct call to the C language wrapper
 functions in the @value{PACKAGE} library; they are not meant to be
 called in normal usage of the package.
 
-@item vicare speech-tools flite constants
+@item @library{vicare speech-tools flite constants}
 @cindex Library @library{vicare speech-tools flite constants}
 @cindex @library{vicare speech-tools flite constants}, library
 It exports one binding for each constant value defined in the C language
 header @file{flite.h}.
 
-@item vicare speech-tools flite features
+@item @library{vicare speech-tools flite features}
 @cindex Library @library{vicare speech-tools flite features}
 @cindex @library{vicare speech-tools flite features}, library
 It exports one identifier syntax binding for each @code{HAVE_} constant
