@@ -29,11 +29,19 @@
 (library (nausicaa speech-tools flite)
   (export
     flite-init
+    flite-available-voice-names
+
     <flite-voice>
     flite-voice.vicare-arguments-validation
     flite-voice/alive.vicare-arguments-validation
     false-or-flite-voice.vicare-arguments-validation
     false-or-flite-voice/alive.vicare-arguments-validation
+
+    <flite-utterance>
+    flite-utterance.vicare-arguments-validation
+    flite-utterance/alive.vicare-arguments-validation
+    false-or-flite-utterance.vicare-arguments-validation
+    false-or-flite-utterance/alive.vicare-arguments-validation
 
     )
   (import (nausicaa)
@@ -59,6 +67,27 @@
     (flite-text-to-speech T V "play"))
   (method (play-file (V <flite-voice>) (F <string>))
     (flite-file-to-speech F V "play"))
+  )
+
+
+(define-label <flite-utterance>
+  (predicate flite-utterance?)
+  (protocol (lambda () flite-synth-text))
+  (virtual-fields (mutable (destructor <procedure>)
+			   flite-utterance-custom-destructor
+			   set-flite-utterance-custom-destructor!))
+  (methods (alive?		flite-utterance?/alive)
+	   (putprop		flite-utterance-putprop)
+	   (getprop		flite-utterance-getprop)
+	   (remprop		flite-utterance-remprop)
+	   (property-list	flite-utterance-property-list)
+	   (hash		flite-utterance-hash)
+	   (finalise		flite-utterance-finalise)
+	   )
+  (method (play (U <flite-utterance>))
+    (flite-process-output U "play"))
+  (method (save-to-file (U <flite-utterance>) (filename <string>))
+    (flite-process-output U filename))
   )
 
 

@@ -233,44 +233,197 @@
    (let (((voice <flite-voice>) (<flite-voice> ())))
      (flonum? (voice play-text "text to speech play"))))
 
-;;   (check
-;;       (let ((voice (flite-voice-select)))
-;; 	(when (file-exists? "proof-01.wav")
-;; 	  (delete-file "proof-01.wav"))
-;; 	(flite-text-to-speech "text to speech saved in file" voice "proof-01.wav")
-;; 	(receive-and-return (bool)
-;; 	    (file-exists? "proof-01.wav")
-;; 	  (when bool
-;; 	    (delete-file "proof-01.wav"))))
-;;     => #t)
-
-;;   (check
-;;       (let ((voice (flite-voice-select)))
-;; 	(when (file-exists? "proof-02.wav")
-;; 	  (delete-file "proof-02.wav"))
-;; 	(flite-text-to-speech "text to wav file test" voice "proof-02.wav")
-;; 	(receive-and-return (bool)
-;; 	    (file-exists? "proof-02.wav")
-;; 	  (when bool
-;; 	    (delete-file "proof-02.wav"))))
-;;     => #t)
-
-;; ;;; --------------------------------------------------------------------
+;;; --------------------------------------------------------------------
 
   (check
-      (let (((voice <flite-voice>) (<flite-voice> ())))
-	(when (file-exists? "proof-03.txt")
-	  (delete-file "proof-03.txt"))
-	(with-output-to-file "proof-03.txt"
-	  (lambda ()
-	    (display "file to speech test")))
-	(receive-and-return (bool)
-	    (flonum? (voice play-file "proof-03.txt"))
+      (with-compensations
+	(define (clean-file)
 	  (when (file-exists? "proof-03.txt")
-	    (delete-file "proof-03.txt"))))
+	    (delete-file "proof-03.txt")))
+	(letrec (((voice <flite-voice>) (compensate
+					    (<flite-voice> ())
+					  (with
+					   (voice finalise)))))
+	  (clean-file)
+	  (compensate
+	    (with-output-to-file "proof-03.txt"
+	      (lambda ()
+		(display "file to speech test")))
+	    (with
+	     (clean-file)))
+	  (flonum? (voice play-file "proof-03.txt"))))
     => #t)
 
   (collect))
+
+
+(parametrise ((check-test-name		'utterance-struct)
+	      (struct-guardian-logger	#f))
+
+  (define who 'test)
+  (define voice (<flite-voice> ()))
+
+;;; --------------------------------------------------------------------
+
+  (check	;this will be garbage collected
+      (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
+;;;(debug-print utterance)
+	((<flite-utterance>) utterance))
+    => #t)
+
+  (check
+      (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	(utterance alive?))
+    => #t)
+
+  (check	;single finalisation
+      (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
+  	(utterance finalise))
+    => #f)
+
+  (check	;double finalisation
+      (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
+  	(utterance finalise)
+  	(utterance finalise))
+    => #f)
+
+  (check	;alive predicate after finalisation
+      (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
+  	(utterance finalise)
+  	(utterance alive?))
+    => #f)
+
+;;; --------------------------------------------------------------------
+;;; destructor
+
+  (check
+      (with-result
+       (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	 (set! (utterance destructor) (lambda (utterance)
+					(add-result 123)))
+	 (utterance finalise)))
+    => '(#f (123)))
+
+;;; --------------------------------------------------------------------
+;;; hash
+
+  (check-for-true
+   (let (((V <flite-utterance>) (<flite-utterance> ("hello" voice))))
+     (integer? (V hash))))
+
+  (check
+      (let ((A (<flite-utterance> ("hello" voice)))
+	    (B (<flite-utterance> ("hello" voice)))
+	    (T (make-hashtable (lambda ((V <flite-utterance>))
+				 (V hash))
+			       eq?)))
+	(hashtable-set! T A 1)
+	(hashtable-set! T B 2)
+	(list (hashtable-ref T A #f)
+	      (hashtable-ref T B #f)))
+    => '(1 2))
+
+;;; --------------------------------------------------------------------
+;;; properties
+
+  (check
+      (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	(S property-list))
+    => '())
+
+  (check
+      (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	(S putprop 'ciao 'salut)
+	(S getprop 'ciao))
+    => 'salut)
+
+  (check
+      (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	(S getprop 'ciao))
+    => #f)
+
+  (check
+      (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	(S putprop 'ciao 'salut)
+	(S remprop 'ciao)
+	(S getprop 'ciao))
+    => #f)
+
+  (check
+      (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+	(S putprop 'ciao 'salut)
+	(S putprop 'hello 'ohayo)
+	(list (S getprop 'ciao)
+	      (S getprop 'hello)))
+    => '(salut ohayo))
+
+;;; --------------------------------------------------------------------
+;;; arguments validation
+
+  (check-for-true
+   (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+     (with-arguments-validation (who)
+	 ((flite-utterance	S))
+       #t)))
+
+  (check-for-true
+   (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+     (S finalise)
+     (with-arguments-validation (who)
+	 ((flite-utterance	S))
+       #t)))
+
+  (check-for-true
+   (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+     (with-arguments-validation (who)
+	 ((flite-utterance/alive	S))
+       #t)))
+
+;;;
+
+  (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
+    (check-for-procedure-argument-violation
+     (begin
+       (S finalise)
+       (with-arguments-validation (who)
+	   ((flite-utterance/alive	S))
+	 #t))
+     (list S)))
+
+  (collect))
+
+
+(parametrise ((check-test-name		'utterance-ops))
+
+  (define voice (<flite-voice> ()))
+
+;;; --------------------------------------------------------------------
+
+  (check
+      (let (((utterance <flite-utterance>) (<flite-utterance> ("utterance play" voice))))
+;;;(debug-print utterance)
+	(flonum? (utterance play)))
+    => #t)
+
+  (check
+      (with-compensations
+	(define (clean-file)
+	  (when (file-exists? "proof-04.txt")
+	    (delete-file "proof-04.txt")))
+	(clean-file)
+	(letrec (((utterance <flite-utterance>) (compensate
+						    (<flite-utterance> ("utterance save to file" voice))
+						  (with
+						   (utterance finalise)))))
+	  (compensate
+	      (begin
+		(utterance save-to-file "proof-04.txt")
+		(file-exists? "proof-04.txt"))
+	    (with
+	     (clean-file)))))
+    => #t)
+
+  #t)
 
 
 ;;;; done

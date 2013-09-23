@@ -145,6 +145,62 @@ ikrt_flite_available_voice_names (ikpcb * pcb)
 
 
 /** --------------------------------------------------------------------
+ ** Utterance.
+ ** ----------------------------------------------------------------- */
+
+ikptr
+ikrt_flite_synth_text (ikptr s_text, ikptr s_voice, ikpcb * pcb)
+{
+#ifdef HAVE_FLITE_SYNTH_TEXT
+  const char *		text	= IK_GENERALISED_C_STRING(s_text);
+  cst_voice *		voice	= IK_FLITE_VOICE(s_voice);
+  cst_utterance *	rv;
+  rv = flite_synth_text(text, voice);
+  if (NULL != rv) {
+    return ika_pointer_alloc(pcb, (ik_ulong)rv);
+  } else
+    return IK_FALSE;
+  return IK_VOID;
+#else
+  feature_failure(__func__);
+#endif
+}
+ikptr
+ikrt_flite_utterance_finalise (ikptr s_utterance, ikpcb * pcb)
+{
+#ifdef HAVE_DELETE_UTTERANCE
+  ikptr		s_pointer		= IK_FLITE_UTTERANCE_POINTER(s_utterance);
+  if (ik_is_pointer(s_pointer)) {
+    cst_utterance *	utterance	= IK_POINTER_DATA_VOIDP(s_pointer);
+    int			owner		= IK_BOOLEAN_TO_INT(IK_FLITE_UTTERANCE_OWNER(s_utterance));
+    if (utterance && owner) {
+      delete_utterance(utterance);
+      IK_POINTER_SET_NULL(s_pointer);
+    }
+  }
+  /* Return     false     so     that    the     return     value     of
+     "$flite-utterance-finalise" is always false. */
+  return IK_FALSE;
+#else
+  feature_failure(__func__);
+#endif
+}
+ikptr
+ikrt_flite_process_output (ikptr s_utterance, ikptr s_outtype, ikpcb * pcb)
+{
+#ifdef HAVE_FLITE_PROCESS_OUTPUT
+  cst_utterance *	utterance	= IK_FLITE_UTTERANCE(s_utterance);
+  const char *		outtype		= IK_GENERALISED_C_STRING(s_outtype);
+  float			rv;
+  rv = flite_process_output(utterance, outtype, FALSE);
+  return ika_flonum_from_double(pcb, (double)rv);
+#else
+  feature_failure(__func__);
+#endif
+}
+
+
+/** --------------------------------------------------------------------
  ** Text to speech.
  ** ----------------------------------------------------------------- */
 
@@ -181,22 +237,16 @@ ikrt_flite_text_to_speech (ikptr s_text, ikptr s_voice, ikptr s_outtype, ikpcb *
 }
 
 
+/** --------------------------------------------------------------------
+ ** Still to be implemented.
+ ** ----------------------------------------------------------------- */
+
 ikptr
 ikrt_flite_text_to_wave (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_TEXT_TO_WAVE
 
   /* rv = flite_text_to_wave(); */
-  return IK_VOID;
-#else
-  feature_failure(__func__);
-#endif
-}
-ikptr
-ikrt_flite_synth_text (ikpcb * pcb)
-{
-#ifdef HAVE_FLITE_SYNTH_TEXT
-  /* rv = flite_synth_text(); */
   return IK_VOID;
 #else
   feature_failure(__func__);
@@ -223,14 +273,9 @@ ikrt_flite_voice_add_lex_addenda (ikpcb * pcb)
 #endif
 }
 
-
-/** --------------------------------------------------------------------
- ** Still to be implemented.
- ** ----------------------------------------------------------------- */
-
 #if 0
 ikptr
-ikrt_flite-doit (ikpcb * pcb)
+ikrt_flite_doit (ikpcb * pcb)
 {
 #ifdef HAVE_FLITE_DOIT
   return IK_VOID;
@@ -239,6 +284,5 @@ ikrt_flite-doit (ikpcb * pcb)
 #endif
 }
 #endif
-
 
 /* end of file */

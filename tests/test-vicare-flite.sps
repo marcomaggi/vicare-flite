@@ -312,6 +312,170 @@
   (collect))
 
 
+(parametrise ((check-test-name		'utterance-struct)
+	      (struct-guardian-logger	#f))
+
+  (define who 'test)
+  (define voice (flite-voice-select))
+
+;;; --------------------------------------------------------------------
+
+  (check	;this will be garbage collected
+      (let ((utterance (flite-synth-text "hello" voice)))
+;;;	(debug-print utterance)
+	(flite-utterance? utterance))
+    => #t)
+
+  (check
+      (flite-utterance?/alive (flite-synth-text "hello" voice))
+    => #t)
+
+  (check	;single finalisation
+      (let ((utterance (flite-synth-text "hello" voice)))
+  	(flite-utterance-finalise utterance))
+    => #f)
+
+  (check	;double finalisation
+      (let ((utterance (flite-synth-text "hello" voice)))
+  	(flite-utterance-finalise utterance)
+  	(flite-utterance-finalise utterance))
+    => #f)
+
+  (check	;alive predicate after finalisation
+      (let ((utterance (flite-synth-text "hello" voice)))
+  	(flite-utterance-finalise utterance)
+  	(flite-utterance?/alive utterance))
+    => #f)
+
+;;; --------------------------------------------------------------------
+;;; destructor
+
+  (check
+      (with-result
+       (let ((utterance (flite-synth-text "hello" voice)))
+	 (set-flite-utterance-custom-destructor! utterance (lambda (utterance)
+						     (add-result 123)))
+	 (flite-utterance-finalise utterance)))
+    => '(#f (123)))
+
+;;; --------------------------------------------------------------------
+;;; hash
+
+  (check-for-true
+   (integer? (flite-utterance-hash (flite-synth-text "hello" voice))))
+
+  (check
+      (let ((A (flite-synth-text "hello" voice))
+	    (B (flite-synth-text "hello" voice))
+	    (T (make-hashtable flite-utterance-hash eq?)))
+	(hashtable-set! T A 1)
+	(hashtable-set! T B 2)
+	(list (hashtable-ref T A #f)
+	      (hashtable-ref T B #f)))
+    => '(1 2))
+
+;;; --------------------------------------------------------------------
+;;; properties
+
+  (check
+      (let ((S (flite-synth-text "hello" voice)))
+	(flite-utterance-property-list S))
+    => '())
+
+  (check
+      (let ((S (flite-synth-text "hello" voice)))
+	(flite-utterance-putprop S 'ciao 'salut)
+	(flite-utterance-getprop S 'ciao))
+    => 'salut)
+
+  (check
+      (let ((S (flite-synth-text "hello" voice)))
+	(flite-utterance-getprop S 'ciao))
+    => #f)
+
+  (check
+      (let ((S (flite-synth-text "hello" voice)))
+	(flite-utterance-putprop S 'ciao 'salut)
+	(flite-utterance-remprop S 'ciao)
+	(flite-utterance-getprop S 'ciao))
+    => #f)
+
+  (check
+      (let ((S (flite-synth-text "hello" voice)))
+	(flite-utterance-putprop S 'ciao 'salut)
+	(flite-utterance-putprop S 'hello 'ohayo)
+	(list (flite-utterance-getprop S 'ciao)
+	      (flite-utterance-getprop S 'hello)))
+    => '(salut ohayo))
+
+;;; --------------------------------------------------------------------
+;;; arguments validation
+
+  (check-for-true
+   (let ((S (flite-synth-text "hello" voice)))
+     (with-arguments-validation (who)
+	 ((flite-utterance	S))
+       #t)))
+
+  (check-for-true
+   (let ((S (flite-synth-text "hello" voice)))
+     (flite-utterance-finalise S)
+     (with-arguments-validation (who)
+	 ((flite-utterance	S))
+       #t)))
+
+  (check-for-true
+   (let ((S (flite-synth-text "hello" voice)))
+     (with-arguments-validation (who)
+	 ((flite-utterance/alive	S))
+       #t)))
+
+;;;
+
+  (check-for-procedure-argument-violation
+   (let ((S 123))
+     (with-arguments-validation (who)
+	 ((flite-utterance	S))
+       #t))
+   '(123))
+
+  (check-for-procedure-argument-violation
+   (let ((S 123))
+     (with-arguments-validation (who)
+	 ((flite-utterance/alive	S))
+       #t))
+   '(123))
+
+  (let ((S (flite-synth-text "hello" voice)))
+    (check-for-procedure-argument-violation
+     (begin
+       (flite-utterance-finalise S)
+       (with-arguments-validation (who)
+	   ((flite-utterance/alive	S))
+	 #t))
+     (list S)))
+
+  (collect))
+
+
+(parametrise ((check-test-name		'utterance-ops))
+
+  (define voice (flite-voice-select))
+
+;;; --------------------------------------------------------------------
+
+  (check-for-true	;play once
+   (let ((utterance (flite-synth-text "utterance to speech play" voice)))
+     (flite-process-output utterance "play")))
+
+  (check-for-true	;play twice
+   (let ((utterance (flite-synth-text "utterance to speech multiple play" voice)))
+     (flite-process-output utterance "play")
+     (flite-process-output utterance "play")))
+
+  #t)
+
+
 ;;;; done
 
 (check-report)

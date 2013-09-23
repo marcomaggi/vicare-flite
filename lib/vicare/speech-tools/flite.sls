@@ -34,8 +34,7 @@
     flite-init
 
     ;; voice
-    flite-voice?
-    flite-voice?/alive			$flite-voice-alive?
+    flite-voice?			flite-voice?/alive
     flite-voice-custom-destructor	set-flite-voice-custom-destructor!
     flite-voice-putprop			flite-voice-getprop
     flite-voice-remprop			flite-voice-property-list
@@ -52,6 +51,26 @@
     flite-available-voice-names
     flite-voice-add-lex-addenda
 
+    ;; utterance
+    flite-utterance?			flite-utterance?/alive
+    flite-utterance-custom-destructor	set-flite-utterance-custom-destructor!
+    flite-utterance-putprop		flite-utterance-getprop
+    flite-utterance-remprop		flite-utterance-property-list
+    flite-utterance-hash
+
+    flite-utterance.vicare-arguments-validation
+    flite-utterance/alive.vicare-arguments-validation
+    false-or-flite-utterance.vicare-arguments-validation
+    false-or-flite-utterance/alive.vicare-arguments-validation
+
+    flite-synth-text
+    flite-utterance-finalise
+    flite-process-output
+
+    ;; text to speech
+    flite-file-to-speech
+    flite-text-to-speech
+
     ;; version numbers and strings
     vicare-flite-version-interface-current
     vicare-flite-version-interface-revision
@@ -62,9 +81,6 @@
 ;;; still to be implemented
 
     flite-text-to-wave
-    flite-file-to-speech
-    flite-text-to-speech
-    flite-synth-text
     flite-synth-phones
     )
   (import (vicare)
@@ -125,17 +141,16 @@
   (ffi.collector-struct-type #f))
 
 (module ()
-  (define (%printer S port sub-printer)
-    (define-inline (%display thing)
-      (display thing port))
-    (define-inline (%write thing)
-      (write thing port))
-    (%display "#[flite-voice")
-    (%display " pointer=")	(%display ($flite-voice-pointer  S))
-    (%display " name=")		(%write   (capi.flite-voice-name S))
-    (%display "]"))
-
-  (set-rtd-printer! (type-descriptor flite-voice) %printer))
+  (set-rtd-printer! (type-descriptor flite-voice)
+    (lambda (S port sub-printer)
+      (define-inline (%display thing)
+	(display thing port))
+      (define-inline (%write thing)
+	(write thing port))
+      (%display "#[flite-voice")
+      (%display " pointer=")	(%display ($flite-voice-pointer  S))
+      (%display " name=")	(%write   (capi.flite-voice-name S))
+      (%display "]"))))
 
 ;;; --------------------------------------------------------------------
 
@@ -179,6 +194,54 @@
     (capi.flite-voice-add-lex-addenda)))
 
 
+;;;; utterance handling
+
+(ffi.define-foreign-pointer-wrapper flite-utterance
+  (ffi.foreign-destructor capi.flite-utterance-finalise)
+  (ffi.collector-struct-type #f))
+
+(module ()
+  (set-rtd-printer! (type-descriptor flite-voice)
+    (lambda (S port sub-printer)
+      (define-inline (%display thing)
+	(display thing port))
+      (define-inline (%write thing)
+	(write thing port))
+      (%display "#[flite-utterance")
+      (%display " pointer=")	(%display ($flite-utterance-pointer  S))
+      (%display "]"))))
+
+;;; --------------------------------------------------------------------
+
+(define (flite-synth-text text voice)
+  (define who 'flite-synth-text)
+  (with-arguments-validation (who)
+      ((general-c-string	text)
+       (flite-voice/alive	voice))
+    (with-general-c-strings
+	((text^		text))
+      (cond ((capi.flite-synth-text text^ voice)
+	     => (lambda (rv)
+		  (make-flite-utterance/owner rv)))
+	    (else
+	     (error who "unable to create utterance object" text voice))))))
+
+(define (flite-utterance-finalise utterance)
+  (define who 'flite-utterance-finalise)
+  (with-arguments-validation (who)
+      ((flite-utterance	utterance))
+    ($flite-utterance-finalise utterance)))
+
+(define (flite-process-output utterance outtype)
+  (define who 'flite-process-output)
+  (with-arguments-validation (who)
+      ((flite-utterance/alive	utterance)
+       (general-c-string	outtype))
+    (with-general-c-strings
+	((outtype^	outtype))
+      (capi.flite-process-output utterance outtype^))))
+
+
 ;;;; text to speech
 
 (define (flite-file-to-speech file voice outtype)
@@ -218,12 +281,6 @@
   (with-arguments-validation (who)
       ()
     (capi.flite-text-to-wave)))
-
-(define (flite-synth-text ctx)
-  (define who 'flite-synth-text)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-synth-text)))
 
 (define (flite-synth-phones ctx)
   (define who 'flite-synth-phones)

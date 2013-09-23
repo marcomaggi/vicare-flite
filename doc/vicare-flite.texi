@@ -272,6 +272,7 @@ this library with the prefix @samp{flite.} as in:
 * plain version::               @value{PACKAGE} version informations.
 * plain init::                  Library initialisation.
 * plain voice::                 Voice selection and handling.
+* plain utterance::             Utterance generation and handling.
 * plain speech::                Text to speech.
 * plain not impl::              Still not implemented.
 @end menu
@@ -353,10 +354,8 @@ speech-tools flite}.
 @cindex Argument @var{voice}
 @cindex @var{voice} argument
 Opaque structure type referencing an instance of the C language type
-@code{cst_voice}.
-
-When instances of this type are used as arguments to functions: this
-documentation identifies them as @var{voice}.
+@code{cst_voice}.  When instances of this type are used as arguments to
+functions: this documentation identifies them as @var{voice}.
 
 Instances of this type must be finalised with @func{flite-voice-finalise};
 whenever an instance of this type is garbage collected:
@@ -526,6 +525,191 @@ voices.
 @end defun
 
 @c page
+@node plain utterance
+@section Utterance generation and handling
+
+
+@menu
+* plain utterance struct::      Utterance data structure.
+* plain utterance ops::         Operating on utterance objects.
+@end menu
+
+@c page
+@node plain utterance struct
+@subsection Utterance data structure
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
+
+
+@deftp {Struct Type} flite-utterance
+@cindex Argument @var{utterance}
+@cindex @var{utterance} argument
+Opaque structure type referencing an instance of the C language type
+@code{cst_utterance}.  When instances of this type are used as arguments
+to functions: this documentation identifies them as @var{utterance}.
+
+Instances of this type must be finalised with
+@func{flite-utterance-finalise}; whenever an instance of this type is
+garbage collected: @func{flite-utterance-finalise} is automatically
+applied to it and any error ignored.
+
+In certain contexts, instances of this type own the referenced
+@code{cst_utterance} value, in other contexts they do not:
+
+@itemize
+@item
+Finalising a @objtype{flite-utterance} instance owning the
+@code{cst_utterance} value, causes finalisation of the
+@code{cst_utterance} value too.
+
+@item
+Finalising a @objtype{flite-utterance} instance @strong{not} owning the
+@code{cst_utterance} value, leaves the @code{cst_utterance} untouched.
+@end itemize
+
+@noindent
+this should happen transparently.
+@end deftp
+
+
+@defun flite-utterance? @var{obj}
+Return @true{} if @var{obj} is an instance of @objtype{flite-utterance};
+otherwise return @false{}.
+@end defun
+
+
+@defun flite-utterance?/alive @var{obj}
+Return @true{} if @var{obj} is an instance of @objtype{flite-utterance}
+and it has not been finalised; return @false{} otherwise.
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Object properties
+
+
+@defun flite-utterance-putprop @var{utterance} @var{key} @var{value}
+Add a new property @var{key} to the property list of @var{utterance};
+@var{key} must be a symbol.  If @var{key} is already set: the old entry
+is mutated to reference the new @var{value}.
+@end defun
+
+
+@defun flite-utterance-getprop @var{utterance} @var{key}
+Return the value of the property @var{key} in the property list of
+@var{utterance}; if @var{key} is not set: return @false{}.  @var{key}
+must be a symbol.
+@end defun
+
+
+@defun flite-utterance-remprop @var{utterance} @var{key}
+Remove the property @var{key} from the property list of @var{utterance};
+if @var{key} is not set: nothing happens.  @var{key} must be a symbol.
+@end defun
+
+
+@defun flite-utterance-property-list @var{utterance}
+Return a new association list representing the property list of
+@var{utterance}.  The order of the entries is the same as the property
+creation order.
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Custom destructor
+
+
+@defun flite-utterance-custom-destructor @var{utterance}
+@defunx set-flite-utterance-custom-destructor! @var{utterance} @var{func}
+Retrieve or set a destructor function associated to @var{utterance}.
+
+Whenever @var{utterance} is finalised, either explicitly with
+@func{flite-utterance-finalise} or implicitly by the garbage collector,
+@var{func} is applied to @var{utterance} before the internal state of
+@var{utterance} is destroyed.
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Other operations
+
+
+@defun flite-utterance-hash @var{utterance}
+Return an exact integer to be used as hashtable key for @var{utterance}.
+Hashtables having a @objtype{flite-utterance} as key can be instantiated
+as follows:
+
+@example
+(make-hashtable flite-utterance-hash eq?)
+@end example
+@end defun
+
+@c ------------------------------------------------------------
+
+@subsubheading Arguments validation
+
+
+The following bindings are meant to be used with the facilities of the
+library @library{vicare arguments validation}.
+
+
+@deffn {Validation Clause} flite-utterance @var{obj}
+@deffnx {Validation Clause} false-or-flite-utterance @var{obj}
+Succeed if @var{obj} satisfies the predicate @func{flite-utterance?};
+the second clause also accepts @false{}.
+@end deffn
+
+
+@deffn {Validation Clause} flite-utterance/alive @var{obj}
+@deffnx {Validation Clause} false-or-flite-utterance/alive @var{obj}
+Succeed if @var{obj} satisfies the predicate
+@func{flite-utterance?/alive}; the second clause also accepts @false{}.
+@end deffn
+
+@c page
+@node plain utterance ops
+@subsection Operating on utterance objects
+
+
+The following bindings are exported by the library @library{vicare
+speech-tools flite}.
+
+
+@defun flite-synth-text @var{text} @var{voice}
+Build and return a new @objtype{flite-utterance} object representing
+@var{text} in the given @var{voice}.  If an error occurs: raise an
+exception.
+
+@var{text} must be a generalised C string holding the text to process,
+@cbuffersref{}.
+@end defun
+
+
+@defun flite-utterance-finalise @var{utterance}
+Finalise @var{utterance}; return unspecified values.  It is fine to apply
+this function multiple times to the same @var{utterance} value: the first
+time the underlying data is finalised, the subsequent times nothing
+happens.
+
+If this function is applied to an @var{utterance} value not owning the
+underlying @code{cst_utterance} value: @var{utterance} is finalised, but the
+@code{cst_utterance} value is left alone.
+@end defun
+
+
+@defun flite-process-output @var{utterance} @var{outtype}
+Process the given utterance and produce some output.  Return a flonum
+representing the number of seconds of generated output.
+
+@var{outtype} must be a must be a generalised C string (@cbuffersref{})
+holding one of: @samp{play}, to play the generated audio; @samp{none},
+to discard the generated audio; a the name of a @code{.wav} file in
+which to save the generated output.
+@end defun
+
+@c page
 @node plain speech
 @section Text to speech
 
@@ -557,8 +741,8 @@ Return a flonum representing the number of seconds of generated output.
 
 @var{outtype} must be a must be a generalised C string (@cbuffersref{})
 holding one of: @samp{play}, to play the generated audio; @samp{none},
-to discard the generated audio; a the name of a file in which to save
-the generated output.
+to discard the generated audio; a the name of a @code{.wav} file in
+which to save the generated output.
 
 @example
 (import (vicare)
@@ -590,10 +774,6 @@ speech-tools flite}.
 @end defun
 
 
-@defun flite-synth-text
-@end defun
-
-
 @defun flite-synth-phones
 @end defun
 
@@ -610,8 +790,17 @@ The library @library{nausicaa speech-tools flite} implements an
 interface to @library{vicare speech-tools flite} on top of the
 @library{nausicaa} language.
 
+The library @library{nausicaa speech-tools flite} reexports the
+following bindings from @library{vicare speech-tools flite}:
+
+@example
+flite-init
+flite-available-voice-names
+@end example
+
 @menu
 * nau voice::                   Voice selection and handling.
+* nau utterance::               Utterance generation and handling.
 @end menu
 
 @c page
@@ -800,6 +989,173 @@ generated output.
 
 @var{filename} must be a generalised C string holding the text to
 process, @cbuffersref{}.
+@end defmethod
+
+@c page
+@node nau utterance
+@section Utterance generation and handling
+
+
+@menu
+* nau utterance objects::       Utterance objects.
+* nau utterance methods::       Utterance methods.
+@end menu
+
+@c page
+@node nau utterance objects
+@subsection Utterance objects
+
+
+The following bindings are exported by the library @library{nausicaa
+speech-tools flite}.
+
+
+@deftp {Label Type} @aclass{flite-utterance}
+@cindex Argument @var{utterance}
+@cindex @var{utterance} argument
+Label type representing objects of type @objtype{flite-utterance}.  When
+instances of this type are used as arguments to functions: this
+documentation identifies them as @var{utterance}.
+
+Instances of this type must be finalised with @func{finalise}; whenever
+an instance of this type is garbage collected: @func{finalise} is
+automatically applied to it and any error ignored.
+@end deftp
+
+
+@defop {Default constructor} @aclass{flite-utterance} constructor @var{text} @var{voice}
+Build and return a new @class{flite-utterance} object making use of the
+specified utterance; if an error occurs raise an exception.
+
+@var{text} must be a generalised C string representing the text to
+process, @cbuffersref{}.  @var{voice} must be a @class{voice} object.
+@end defop
+
+
+@deffn Syntax @aclass{flite-utterance} (@meta{text} @meta{voice})
+Build and return a new @class{flite-utterance} using the default
+constructor.
+@end deffn
+
+
+@defmethod @aclass{flite-utterance} finalise
+Finalise the instance; return unspecified values.  It is fine to call
+this method multiple times for the same instance.
+@end defmethod
+
+
+@deftypemethod @aclass{flite-utterance} @aclass{boolean} alive?
+Return @true{} if @var{obj} is an instance of @class{flite-utterance}
+and it has not been finalised; return @false{} otherwise.
+@end deftypemethod
+
+
+@c ------------------------------------------------------------
+
+@subsubheading Object properties
+
+
+@defmethod @aclass{flite-utterance} putprop @var{key} @var{value}
+Add a new property @var{key} to the property list of the instance;
+@var{key} must be a symbol.  If @var{key} is already set: the old entry
+is mutated to reference the new @var{value}.
+@end defmethod
+
+
+@defmethod @aclass{flite-utterance} getprop @var{key}
+Return the value of the property @var{key} in the property list of the
+instance; if @var{key} is not set: return @false{}.  @var{key} must be a
+symbol.
+@end defmethod
+
+
+@defmethod @aclass{flite-utterance} remprop @var{key}
+Remove the property @var{key} from the property list of the instance; if
+@var{key} is not set: nothing happens.  @var{key} must be a symbol.
+@end defmethod
+
+
+@defmethod @aclass{flite-utterance} property-list
+Return a new association list representing the property list of the
+instance.  The order of the entries is the same as the property creation
+order.
+@end defmethod
+
+@c ------------------------------------------------------------
+
+@subsubheading Virtual fields
+
+
+@deftypecv {Mutable virtual field} @aclass{flite-utterance} @aclass{procedure} destructor
+Retrieve or set a destructor function associated to the instance.
+
+Whenever the instance is finalised, either explicitly with
+@func{finalise} or implicitly by the garbage collector, the custom
+destructor is applied to the instance before the internal state of the
+instance is destroyed.
+@end deftypecv
+
+@c ------------------------------------------------------------
+
+@subsubheading Other operations
+
+
+@defmethod @aclass{flite-utterance} hash
+Return an exact integer to be used as hashtable key for the instance.
+Hashtables having a @class{flite-utterance} as key can be instantiated
+as follows:
+
+@example
+(make-hashtable (lambda ((V <flite-utterance>))
+                  (V hash))
+                eq?)
+@end example
+@end defmethod
+
+@c ------------------------------------------------------------
+
+@subsubheading Arguments validation
+
+
+The following bindings are meant to be used with the facilities of the
+library @library{vicare arguments validation}.
+
+
+@deffn {Validation Clause} flite-utterance @var{obj}
+@deffnx {Validation Clause} false-or-flite-utterance @var{obj}
+Succeed if @var{obj} is an instance of @class{flite-utterance}; the
+second clause also accepts @false{}.
+@end deffn
+
+
+@deffn {Validation Clause} flite-utterance/alive @var{obj}
+@deffnx {Validation Clause} false-or-flite-utterance/alive @var{obj}
+Succeed if @var{obj} is an instance of @class{flite-utterance} and the
+method @func{alive?} would return @true{} if applied to it; the second
+clause also accepts @false{}.
+@end deffn
+
+@c page
+@node nau utterance methods
+@subsection Utterance methods
+
+
+The following bindings are exported by the library @library{nausicaa
+speech-tools flite}.
+
+
+@defmethod @aclass{flite-utterance} play
+Play the instance.  Return a flonum representing the number of seconds
+of generated output.
+@end defmethod
+
+
+@defmethod @aclass{flite-utterance} save-to-file @var{filename}
+Save the instance to a @code{.wav}.  Return a flonum representing the
+number of seconds of generated output.
+
+@var{filename} must be a generalised C string holding the @code{.wav}
+file name, @cbuffersref{}.
 @end defmethod
 
 @c page

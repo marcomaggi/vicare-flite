@@ -57,6 +57,12 @@ extern cst_val *	ik_imported_flite_set_voice_list (void);
 #define IK_FLITE_VOICE(VOICE)	\
   IK_POINTER_DATA_VOIDP(IK_FLITE_VOICE_POINTER(VOICE))
 
+/* Accessors for the fields of the Scheme structure "cst_utterance". */
+#define IK_FLITE_UTTERANCE_POINTER(UTTERANCE)	IK_FIELD((UTTERANCE),0)
+#define IK_FLITE_UTTERANCE_OWNER(UTTERANCE)	IK_FIELD((UTTERANCE),1)
+#define IK_FLITE_UTTERANCE(UTTERANCE)	\
+  IK_POINTER_DATA_VOIDP(IK_FLITE_UTTERANCE_POINTER(UTTERANCE))
+
 
 /** --------------------------------------------------------------------
  ** Support for missing functions.

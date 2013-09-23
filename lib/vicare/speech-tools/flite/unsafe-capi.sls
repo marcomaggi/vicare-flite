@@ -47,6 +47,11 @@
     flite-file-to-speech
     flite-text-to-speech
 
+    ;; utterance handline
+    flite-synth-text
+    flite-utterance-finalise
+    flite-process-output
+
     ;; version functions
     vicare-flite-version-interface-current
     vicare-flite-version-interface-revision
@@ -57,7 +62,6 @@
 ;;; still to be implemented
 
     flite-text-to-wave
-    flite-synth-text
     flite-synth-phones
     )
   (import (vicare))
@@ -108,6 +112,18 @@
   (foreign-call "ikrt_flite_voice_add_lex_addenda"))
 
 
+;;;; utterance
+
+(define-inline (flite-synth-text text voice)
+  (foreign-call "ikrt_flite_synth_text" text voice))
+
+(define-inline (flite-utterance-finalise utterance)
+  (foreign-call "ikrt_flite_utterance_finalise" utterance))
+
+(define-inline (flite-process-output utterance outtype)
+  (foreign-call "ikrt_flite_process_output" utterance outtype))
+
+
 ;;;; strings to speech
 
 (define-inline (flite-text-to-speech text voice outtype)
@@ -121,9 +137,6 @@
 
 (define-inline (flite-text-to-wave)
   (foreign-call "ikrt_flite_text_to_wave"))
-
-(define-inline (flite-synth-text)
-  (foreign-call "ikrt_flite_synth_text"))
 
 (define-inline (flite-synth-phones)
   (foreign-call "ikrt_flite_synth_phones"))

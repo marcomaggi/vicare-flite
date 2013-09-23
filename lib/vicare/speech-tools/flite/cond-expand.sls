@@ -48,7 +48,10 @@
   (flite-synth-text		HAVE_FLITE_SYNTH_TEXT)
   (flite-synth-phones		HAVE_FLITE_SYNTH_PHONES)
   (flite-voice-select		HAVE_FLITE_VOICE_SELECT)
-  (flite-voice-add-lex-addenda	HAVE_FLITE_VOICE_ADD_LEX_ADDENDA))
+  (flite-voice-add-lex-addenda	HAVE_FLITE_VOICE_ADD_LEX_ADDENDA)
+  (flite-utterance-finalise	HAVE_DELETE_UTTERANCE)
+  (flite-process-output		HAVE_FLITE_PROCESS_OUTPUT)
+  )
 
 
 ;;;; done

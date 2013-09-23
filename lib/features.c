@@ -73,6 +73,8 @@ main (int argc, const char *const argv[])
     HAVE_FLITE_SYNTH_PHONES\n\
     HAVE_FLITE_VOICE_SELECT\n\
     HAVE_FLITE_VOICE_ADD_LEX_ADDENDA\n\
+    HAVE_DELETE_UTTERANCE\n\
+    HAVE_FLITE_PROCESS_OUTPUT\n\
     )\n\
   (import (rnrs))\n\
 \n\
@@ -149,6 +151,22 @@ printf("(define-inline-constant HAVE_FLITE_VOICE_SELECT %s)\n",
 
 printf("(define-inline-constant HAVE_FLITE_VOICE_ADD_LEX_ADDENDA %s)\n",
 #ifdef HAVE_FLITE_VOICE_ADD_LEX_ADDENDA
+  "#t"
+#else
+  "#f"
+#endif
+  );
+
+printf("(define-inline-constant HAVE_DELETE_UTTERANCE %s)\n",
+#ifdef HAVE_DELETE_UTTERANCE
+  "#t"
+#else
+  "#f"
+#endif
+  );
+
+printf("(define-inline-constant HAVE_FLITE_PROCESS_OUTPUT %s)\n",
+#ifdef HAVE_FLITE_PROCESS_OUTPUT
   "#t"
 #else
   "#f"
