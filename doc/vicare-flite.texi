@@ -710,7 +710,7 @@ order.
 @subsubheading Virtual fields
 
 
-@deftypecv @aclass{flite-voice} @aclass{procedure} destructor
+@deftypecv {Mutable virtual field} @aclass{flite-voice} @aclass{procedure} destructor
 Retrieve or set a destructor function associated to the instance.
 
 Whenever the instance is finalised, either explicitly with
