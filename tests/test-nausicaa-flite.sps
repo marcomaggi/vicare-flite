@@ -147,20 +147,20 @@
   (check-for-true
    (let (((S <flite-voice>) (<flite-voice> ("rms"))))
      (with-arguments-validation (who)
-	 ((flite-voice	S))
+	 ((<flite-voice>	S))
        #t)))
 
   (check-for-true
    (let (((S <flite-voice>) (<flite-voice> ("rms"))))
      (S finalise)
      (with-arguments-validation (who)
-	 ((flite-voice	S))
+	 ((<flite-voice>	S))
        #t)))
 
   (check-for-true
    (let (((S <flite-voice>) (<flite-voice> ("rms"))))
      (with-arguments-validation (who)
-	 ((flite-voice/alive	S))
+	 ((<flite-voice>/alive	S))
        #t)))
 
 ;;;
@@ -170,7 +170,7 @@
      (begin
        (S finalise)
        (with-arguments-validation (who)
-	   ((flite-voice/alive	S))
+	   ((<flite-voice>/alive	S))
 	 #t))
      (list S)))
 
@@ -363,20 +363,20 @@
   (check-for-true
    (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
      (with-arguments-validation (who)
-	 ((flite-utterance	S))
+	 ((<flite-utterance>	S))
        #t)))
 
   (check-for-true
    (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
      (S finalise)
      (with-arguments-validation (who)
-	 ((flite-utterance	S))
+	 ((<flite-utterance>	S))
        #t)))
 
   (check-for-true
    (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
      (with-arguments-validation (who)
-	 ((flite-utterance/alive	S))
+	 ((<flite-utterance>/alive	S))
        #t)))
 
 ;;;
@@ -386,7 +386,7 @@
      (begin
        (S finalise)
        (with-arguments-validation (who)
-	   ((flite-utterance/alive	S))
+	   ((<flite-utterance>/alive	S))
 	 #t))
      (list S)))
 

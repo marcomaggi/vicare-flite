@@ -32,17 +32,24 @@
     flite-available-voice-names
 
     <flite-voice>
-    flite-voice.vicare-arguments-validation
-    flite-voice/alive.vicare-arguments-validation
-    false-or-flite-voice.vicare-arguments-validation
-    false-or-flite-voice/alive.vicare-arguments-validation
+    (rename (flite-voice.vicare-arguments-validation
+	     <flite-voice>.vicare-arguments-validation)
+	    (flite-voice/alive.vicare-arguments-validation
+	     <flite-voice>/alive.vicare-arguments-validation)
+	    (false-or-flite-voice.vicare-arguments-validation
+	     false-or-<flite-voice>.vicare-arguments-validation)
+	    (false-or-flite-voice/alive.vicare-arguments-validation
+	     false-or-<flite-voice>/alive.vicare-arguments-validation))
 
     <flite-utterance>
-    flite-utterance.vicare-arguments-validation
-    flite-utterance/alive.vicare-arguments-validation
-    false-or-flite-utterance.vicare-arguments-validation
-    false-or-flite-utterance/alive.vicare-arguments-validation
-
+    (rename (flite-utterance.vicare-arguments-validation
+	     <flite-utterance>.vicare-arguments-validation)
+	    (flite-utterance/alive.vicare-arguments-validation
+	     <flite-utterance>/alive.vicare-arguments-validation)
+	    (false-or-flite-utterance.vicare-arguments-validation
+	     false-or-<flite-utterance>.vicare-arguments-validation)
+	    (false-or-flite-utterance/alive.vicare-arguments-validation
+	     false-or-<flite-utterance>/alive.vicare-arguments-validation))
     )
   (import (nausicaa)
     (vicare speech-tools flite))

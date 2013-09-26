@@ -935,15 +935,15 @@ The following bindings are meant to be used with the facilities of the
 library @library{vicare arguments validation}.
 
 
-@deffn {Validation Clause} flite-voice @var{obj}
-@deffnx {Validation Clause} false-or-flite-voice @var{obj}
+@deffn {Validation Clause} @aclass{flite-voice} @var{obj}
+@deffnx {Validation Clause} false-or-@aclass{flite-voice} @var{obj}
 Succeed if @var{obj} is an instance of @class{flite-voice}; the second
 clause also accepts @false{}.
 @end deffn
 
 
-@deffn {Validation Clause} flite-voice/alive @var{obj}
-@deffnx {Validation Clause} false-or-flite-voice/alive @var{obj}
+@deffn {Validation Clause} @aclass{flite-voice}/alive @var{obj}
+@deffnx {Validation Clause} false-or-@aclass{flite-voice}/alive @var{obj}
 Succeed if @var{obj} is an instance of @class{flite-voice} and the
 method @func{alive?} would return @true{} if applied to it; the second
 clause also accepts @false{}.
@@ -1121,15 +1121,15 @@ The following bindings are meant to be used with the facilities of the
 library @library{vicare arguments validation}.
 
 
-@deffn {Validation Clause} flite-utterance @var{obj}
-@deffnx {Validation Clause} false-or-flite-utterance @var{obj}
+@deffn {Validation Clause} @aclass{flite-utterance} @var{obj}
+@deffnx {Validation Clause} false-or-@aclass{flite-utterance} @var{obj}
 Succeed if @var{obj} is an instance of @class{flite-utterance}; the
 second clause also accepts @false{}.
 @end deffn
 
 
-@deffn {Validation Clause} flite-utterance/alive @var{obj}
-@deffnx {Validation Clause} false-or-flite-utterance/alive @var{obj}
+@deffn {Validation Clause} @aclass{flite-utterance}/alive @var{obj}
+@deffnx {Validation Clause} false-or-@aclass{flite-utterance}/alive @var{obj}
 Succeed if @var{obj} is an instance of @class{flite-utterance} and the
 method @func{alive?} would return @true{} if applied to it; the second
 clause also accepts @false{}.
