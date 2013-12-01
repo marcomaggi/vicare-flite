@@ -184,27 +184,27 @@
 ;;;
 
   (check-for-procedure-argument-violation
-   (let ((S 123))
-     (with-arguments-validation (who)
-	 ((flite-voice	S))
-       #t))
-   '(123))
+      (let ((S 123))
+	(with-arguments-validation (who)
+	    ((flite-voice	S))
+	  #t))
+    => `(,who (123)))
 
   (check-for-procedure-argument-violation
-   (let ((S 123))
-     (with-arguments-validation (who)
-	 ((flite-voice/alive	S))
-       #t))
-   '(123))
+      (let ((S 123))
+	(with-arguments-validation (who)
+	    ((flite-voice/alive	S))
+	  #t))
+    => `(,who (123)))
 
   (let ((S (flite-voice-select "rms")))
     (check-for-procedure-argument-violation
-     (begin
-       (flite-voice-finalise S)
-       (with-arguments-validation (who)
-	   ((flite-voice/alive	S))
-	 #t))
-     (list S)))
+	(begin
+	  (flite-voice-finalise S)
+	  (with-arguments-validation (who)
+	      ((flite-voice/alive	S))
+	    #t))
+      => (list who (list S))))
 
   (collect))
 
@@ -433,27 +433,27 @@
 ;;;
 
   (check-for-procedure-argument-violation
-   (let ((S 123))
-     (with-arguments-validation (who)
-	 ((flite-utterance	S))
-       #t))
-   '(123))
+      (let ((S 123))
+	(with-arguments-validation (who)
+	    ((flite-utterance	S))
+	  #t))
+    => `(,who (123)))
 
   (check-for-procedure-argument-violation
-   (let ((S 123))
-     (with-arguments-validation (who)
-	 ((flite-utterance/alive	S))
-       #t))
-   '(123))
+      (let ((S 123))
+	(with-arguments-validation (who)
+	    ((flite-utterance/alive	S))
+	  #t))
+    => `(,who (123)))
 
   (let ((S (flite-synth-text "hello" voice)))
     (check-for-procedure-argument-violation
-     (begin
-       (flite-utterance-finalise S)
-       (with-arguments-validation (who)
-	   ((flite-utterance/alive	S))
-	 #t))
-     (list S)))
+	(begin
+	  (flite-utterance-finalise S)
+	  (with-arguments-validation (who)
+	      ((flite-utterance/alive	S))
+	    #t))
+      => (list who (list S))))
 
   (collect))
 

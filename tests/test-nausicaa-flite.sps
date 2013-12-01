@@ -167,12 +167,12 @@
 
   (let (((S <flite-voice>) (<flite-voice> ("rms"))))
     (check-for-procedure-argument-violation
-     (begin
-       (S finalise)
-       (with-arguments-validation (who)
-	   ((<flite-voice>/alive	S))
-	 #t))
-     (list S)))
+	(begin
+	  (S finalise)
+	  (with-arguments-validation (who)
+	      ((<flite-voice>/alive	S))
+	    #t))
+      => (list who (list S))))
 
   (collect))
 
@@ -383,12 +383,12 @@
 
   (let (((S <flite-utterance>) (<flite-utterance> ("hello" voice))))
     (check-for-procedure-argument-violation
-     (begin
-       (S finalise)
-       (with-arguments-validation (who)
-	   ((<flite-utterance>/alive	S))
-	 #t))
-     (list S)))
+	(begin
+	  (S finalise)
+	  (with-arguments-validation (who)
+	      ((<flite-utterance>/alive	S))
+	    #t))
+      => (list who (list S))))
 
   (collect))
 
