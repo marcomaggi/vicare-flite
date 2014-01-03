@@ -6,7 +6,8 @@ EXTRA_DIST	= \
 # These files are hand-written.
 nobase_dist_libvicare_DATA = \
 	vicare/speech-tools/flite.sls			\
-	vicare/speech-tools/flite/unsafe-capi.sls
+	vicare/speech-tools/flite/unsafe-capi.sls	\
+	vicare/speech-tools/flite/cond-expand.sls
 
 # These files are created at configuration or make time.
 nobase_nodist_libvicare2_DATA = \
