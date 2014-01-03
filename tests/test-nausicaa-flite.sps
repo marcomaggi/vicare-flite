@@ -8,7 +8,7 @@
 ;;;
 ;;;
 ;;;
-;;;Copyright (C) 2013 Marco Maggi <marco.maggi-ipsu@poste.it>
+;;;Copyright (C) 2013, 2014 Marco Maggi <marco.maggi-ipsu@poste.it>
 ;;;
 ;;;This program is free software:  you can redistribute it and/or modify
 ;;;it under the terms of the  GNU General Public License as published by
@@ -52,7 +52,7 @@
   (check	;this will be garbage collected
       (let (((voice <flite-voice>) (<flite-voice> ("rms"))))
 ;;;(debug-print voice)
-	((<flite-voice>) voice))
+	(is-a? voice <flite-voice>))
     => #t)
 
   (check
@@ -268,7 +268,7 @@
   (check	;this will be garbage collected
       (let (((utterance <flite-utterance>) (<flite-utterance> ("hello" voice))))
 ;;;(debug-print utterance)
-	((<flite-utterance>) utterance))
+	(is-a? utterance <flite-utterance>))
     => #t)
 
   (check
