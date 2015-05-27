@@ -1,8 +1,8 @@
 ;;; -*- coding: utf-8-unix -*-
 ;;;
-;;;Part of: Vicare/Flite
+;;;Part of: Vicare/Template
 ;;;Contents: compile script
-;;;Date: Sat Sep 21, 2013
+;;;Date: Sat Jan 21, 2012
 ;;;
 ;;;Abstract
 ;;;
@@ -26,9 +26,8 @@
 
 #!r6rs
 (import
-    (only (vicare speech-tools flite))
-  (only (vicare speech-tools flite features))
-  (only (vicare speech-tools flite cond-expand))
+    (only (vicare category template))
+  (only (vicare category template features))
   )
 
 ;;; end of file

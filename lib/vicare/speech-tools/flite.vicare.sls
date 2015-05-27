@@ -26,8 +26,8 @@
 
 
 #!vicare
-#!(load-shared-library "vicare-flite")
 (library (vicare speech-tools flite)
+  (foreign-library "vicare-flite")
   (export
 
     ;; library initialisation
