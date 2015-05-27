@@ -8,7 +8,7 @@
 ;;;
 ;;;
 ;;;
-;;;Copyright (C) 2013 Marco Maggi <marco.maggi-ipsu@poste.it>
+;;;Copyright (C) 2013, 2015 Marco Maggi <marco.maggi-ipsu@poste.it>
 ;;;
 ;;;This program is free software:  you can redistribute it and/or modify
 ;;;it under the terms of the  GNU General Public License as published by
@@ -69,76 +69,76 @@
 
 ;;;; version functions
 
-(define-inline (vicare-flite-version-interface-current)
+(define-syntax-rule (vicare-flite-version-interface-current)
   (foreign-call "ikrt_flite_version_interface_current"))
 
-(define-inline (vicare-flite-version-interface-revision)
+(define-syntax-rule (vicare-flite-version-interface-revision)
   (foreign-call "ikrt_flite_version_interface_revision"))
 
-(define-inline (vicare-flite-version-interface-age)
+(define-syntax-rule (vicare-flite-version-interface-age)
   (foreign-call "ikrt_flite_version_interface_age"))
 
-(define-inline (vicare-flite-version)
+(define-syntax-rule (vicare-flite-version)
   (foreign-call "ikrt_flite_version"))
 
 
 ;;;; library initialisation
 
-(define-inline (flite-init)
+(define-syntax-rule (flite-init)
   (foreign-call "ikrt_flite_init"))
 
 
 ;;;; voice handling
 
-(define-inline (flite-voice-select voice)
+(define-syntax-rule (flite-voice-select voice)
   (foreign-call "ikrt_flite_voice_select" voice))
 
 ;;Commented  out  because  there  is  no  finalisation  for  FLITE-VOICE
 ;;structures; but kept  here just in case, in future,  there is the need
 ;;to introduce it.
 ;;
-;; (define-inline (flite-voice-finalise voice)
+;; (define-syntax-rule (flite-voice-finalise voice)
 ;;   (foreign-call "ikrt_flite_voice_finalise" voice))
 
 ;;; --------------------------------------------------------------------
 
-(define-inline (flite-voice-name voice)
+(define-syntax-rule (flite-voice-name voice)
   (foreign-call "ikrt_flite_voice_name" voice))
 
-(define-inline (flite-available-voice-names)
+(define-syntax-rule (flite-available-voice-names)
   (foreign-call "ikrt_flite_available_voice_names"))
 
-(define-inline (flite-voice-add-lex-addenda)
+(define-syntax-rule (flite-voice-add-lex-addenda)
   (foreign-call "ikrt_flite_voice_add_lex_addenda"))
 
 
 ;;;; utterance
 
-(define-inline (flite-synth-text text voice)
+(define-syntax-rule (flite-synth-text text voice)
   (foreign-call "ikrt_flite_synth_text" text voice))
 
-(define-inline (flite-utterance-finalise utterance)
+(define-syntax-rule (flite-utterance-finalise utterance)
   (foreign-call "ikrt_flite_utterance_finalise" utterance))
 
-(define-inline (flite-process-output utterance outtype)
+(define-syntax-rule (flite-process-output utterance outtype)
   (foreign-call "ikrt_flite_process_output" utterance outtype))
 
 
 ;;;; strings to speech
 
-(define-inline (flite-text-to-speech text voice outtype)
+(define-syntax-rule (flite-text-to-speech text voice outtype)
   (foreign-call "ikrt_flite_text_to_speech" text voice outtype))
 
-(define-inline (flite-file-to-speech file voice outtype)
+(define-syntax-rule (flite-file-to-speech file voice outtype)
   (foreign-call "ikrt_flite_file_to_speech" file voice outtype))
 
 
 ;;;; still not implemented
 
-(define-inline (flite-text-to-wave)
+(define-syntax-rule (flite-text-to-wave)
   (foreign-call "ikrt_flite_text_to_wave"))
 
-(define-inline (flite-synth-phones)
+(define-syntax-rule (flite-synth-phones)
   (foreign-call "ikrt_flite_synth_phones"))
 
 

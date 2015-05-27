@@ -8,7 +8,7 @@
 ;;;
 ;;;
 ;;;
-;;;Copyright (C) 2013 Marco Maggi <marco.maggi-ipsu@poste.it>
+;;;Copyright (C) 2013, 2015 Marco Maggi <marco.maggi-ipsu@poste.it>
 ;;;
 ;;;This program is free software:  you can redistribute it and/or modify
 ;;;it under the terms of the  GNU General Public License as published by
@@ -159,54 +159,7 @@
 	      (flite-voice-getprop S 'hello)))
     => '(salut ohayo))
 
-;;; --------------------------------------------------------------------
-;;; arguments validation
-
-  (check-for-true
-   (let ((S (flite-voice-select "rms")))
-     (with-arguments-validation (who)
-	 ((flite-voice	S))
-       #t)))
-
-  (check-for-true
-   (let ((S (flite-voice-select "rms")))
-     (flite-voice-finalise S)
-     (with-arguments-validation (who)
-	 ((flite-voice	S))
-       #t)))
-
-  (check-for-true
-   (let ((S (flite-voice-select "rms")))
-     (with-arguments-validation (who)
-	 ((flite-voice/alive	S))
-       #t)))
-
-;;;
-
-  (check-for-procedure-argument-violation
-      (let ((S 123))
-	(with-arguments-validation (who)
-	    ((flite-voice	S))
-	  #t))
-    => `(,who (123)))
-
-  (check-for-procedure-argument-violation
-      (let ((S 123))
-	(with-arguments-validation (who)
-	    ((flite-voice/alive	S))
-	  #t))
-    => `(,who (123)))
-
-  (let ((S (flite-voice-select "rms")))
-    (check-for-procedure-argument-violation
-	(begin
-	  (flite-voice-finalise S)
-	  (with-arguments-validation (who)
-	      ((flite-voice/alive	S))
-	    #t))
-      => (list who (list S))))
-
-  (collect))
+  (collect 'fullest))
 
 
 (parametrise ((check-test-name		'voice-ops))
@@ -245,7 +198,7 @@
      (check-pretty-print (list 'available-voices N))
      (for-all string? N)))
 
-  (collect))
+  (collect 'fullest))
 
 
 (parametrise ((check-test-name		'text-to-speech))
@@ -309,7 +262,7 @@
 	    (delete-file "proof-03.txt"))))
     => #t)
 
-  (collect))
+  (collect 'fullest))
 
 
 (parametrise ((check-test-name		'utterance-struct)
@@ -408,54 +361,7 @@
 	      (flite-utterance-getprop S 'hello)))
     => '(salut ohayo))
 
-;;; --------------------------------------------------------------------
-;;; arguments validation
-
-  (check-for-true
-   (let ((S (flite-synth-text "hello" voice)))
-     (with-arguments-validation (who)
-	 ((flite-utterance	S))
-       #t)))
-
-  (check-for-true
-   (let ((S (flite-synth-text "hello" voice)))
-     (flite-utterance-finalise S)
-     (with-arguments-validation (who)
-	 ((flite-utterance	S))
-       #t)))
-
-  (check-for-true
-   (let ((S (flite-synth-text "hello" voice)))
-     (with-arguments-validation (who)
-	 ((flite-utterance/alive	S))
-       #t)))
-
-;;;
-
-  (check-for-procedure-argument-violation
-      (let ((S 123))
-	(with-arguments-validation (who)
-	    ((flite-utterance	S))
-	  #t))
-    => `(,who (123)))
-
-  (check-for-procedure-argument-violation
-      (let ((S 123))
-	(with-arguments-validation (who)
-	    ((flite-utterance/alive	S))
-	  #t))
-    => `(,who (123)))
-
-  (let ((S (flite-synth-text "hello" voice)))
-    (check-for-procedure-argument-violation
-	(begin
-	  (flite-utterance-finalise S)
-	  (with-arguments-validation (who)
-	      ((flite-utterance/alive	S))
-	    #t))
-      => (list who (list S))))
-
-  (collect))
+  (collect 'fullest))
 
 
 (parametrise ((check-test-name		'utterance-ops))
@@ -473,11 +379,12 @@
      (flite-process-output utterance "play")
      (flite-process-output utterance "play")))
 
-  #t)
+  (collect 'fullest))
 
 
 ;;;; done
 
+(collect 'fullest)
 (check-report)
 
 ;;; end of file

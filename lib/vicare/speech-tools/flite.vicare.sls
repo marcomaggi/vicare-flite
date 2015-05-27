@@ -8,7 +8,7 @@
 ;;;
 ;;;
 ;;;
-;;;Copyright (C) 2013 Marco Maggi <marco.maggi-ipsu@poste.it>
+;;;Copyright (C) 2013, 2015 Marco Maggi <marco.maggi-ipsu@poste.it>
 ;;;
 ;;;This program is free software:  you can redistribute it and/or modify
 ;;;it under the terms of the  GNU General Public License as published by
@@ -40,11 +40,6 @@
     flite-voice-remprop			flite-voice-property-list
     flite-voice-hash
 
-    flite-voice.vicare-arguments-validation
-    flite-voice/alive.vicare-arguments-validation
-    false-or-flite-voice.vicare-arguments-validation
-    false-or-flite-voice/alive.vicare-arguments-validation
-
     flite-voice-select
     flite-voice-finalise
     flite-voice-name
@@ -57,11 +52,6 @@
     flite-utterance-putprop		flite-utterance-getprop
     flite-utterance-remprop		flite-utterance-property-list
     flite-utterance-hash
-
-    flite-utterance.vicare-arguments-validation
-    flite-utterance/alive.vicare-arguments-validation
-    false-or-flite-utterance.vicare-arguments-validation
-    false-or-flite-utterance/alive.vicare-arguments-validation
 
     flite-synth-text
     flite-utterance-finalise
@@ -88,16 +78,8 @@
     (prefix (vicare speech-tools flite unsafe-capi) capi.)
     #;(prefix (vicare ffi) ffi.)
     (prefix (vicare ffi foreign-pointer-wrapper) ffi.)
-    (vicare arguments validation)
     (vicare arguments general-c-buffers)
     #;(prefix (vicare platform words) words.))
-
-
-;;;; arguments validation
-
-#;(define-argument-validation (fixnum who obj)
-  (fixnum? obj)
-  (assertion-violation who "expected fixnum as argument" obj))
 
 
 ;;;; library initialisation
@@ -154,44 +136,30 @@
 
 ;;; --------------------------------------------------------------------
 
-(define flite-voice-select
-  (case-lambda
-   (()
-    (flite-voice-select "rms"))
-   ((voice-name)
-    (define who 'flite-voice-select)
-    (with-arguments-validation (who)
-	((general-c-string	voice-name))
-      (with-general-c-strings
-	  ((voice-name^	voice-name))
-	(let ((rv (capi.flite-voice-select voice-name^)))
-	  (if rv
-	      (make-flite-voice/not-owner rv)
-	    (error who "unable to create voice object" voice-name))))))
-   ))
+(case-define* flite-voice-select
+  (()
+   (flite-voice-select "rms"))
+  (({voice-name general-c-string?})
+   (with-general-c-strings
+       ((voice-name^	voice-name))
+     (let ((rv (capi.flite-voice-select voice-name^)))
+       (if rv
+	   (make-flite-voice/not-owner rv)
+	 (error __who__ "unable to create voice object" voice-name))))))
 
-(define (flite-voice-finalise voice)
-  (define who 'flite-voice-finalise)
-  (with-arguments-validation (who)
-      ((flite-voice	voice))
-    ($flite-voice-finalise voice)))
+(define* (flite-voice-finalise {voice flite-voice?})
+  ($flite-voice-finalise voice))
 
 ;;; --------------------------------------------------------------------
 
-(define (flite-voice-name voice)
-  (define who 'flite-voice-name)
-  (with-arguments-validation (who)
-      ((flite-voice	voice))
-    (capi.flite-voice-name voice)))
+(define* (flite-voice-name {voice flite-voice?})
+  (capi.flite-voice-name voice))
 
 (define (flite-available-voice-names)
   (capi.flite-available-voice-names))
 
-(define (flite-voice-add-lex-addenda ctx)
-  (define who 'flite-voice-add-lex-addenda)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-voice-add-lex-addenda)))
+(define* (flite-voice-add-lex-addenda)
+  (capi.flite-voice-add-lex-addenda))
 
 
 ;;;; utterance handling
@@ -213,58 +181,37 @@
 
 ;;; --------------------------------------------------------------------
 
-(define (flite-synth-text text voice)
-  (define who 'flite-synth-text)
-  (with-arguments-validation (who)
-      ((general-c-string	text)
-       (flite-voice/alive	voice))
-    (with-general-c-strings
-	((text^		text))
-      (cond ((capi.flite-synth-text text^ voice)
-	     => (lambda (rv)
-		  (make-flite-utterance/owner rv)))
-	    (else
-	     (error who "unable to create utterance object" text voice))))))
+(define* (flite-synth-text {text general-c-string?} {voice flite-voice?/alive})
+  (with-general-c-strings
+      ((text^		text))
+    (cond ((capi.flite-synth-text text^ voice)
+	   => (lambda (rv)
+		(make-flite-utterance/owner rv)))
+	  (else
+	   (error __who__ "unable to create utterance object" text voice)))))
 
-(define (flite-utterance-finalise utterance)
-  (define who 'flite-utterance-finalise)
-  (with-arguments-validation (who)
-      ((flite-utterance	utterance))
-    ($flite-utterance-finalise utterance)))
+(define* (flite-utterance-finalise {utterance flite-utterance?})
+  ($flite-utterance-finalise utterance))
 
-(define (flite-process-output utterance outtype)
-  (define who 'flite-process-output)
-  (with-arguments-validation (who)
-      ((flite-utterance/alive	utterance)
-       (general-c-string	outtype))
-    (with-general-c-strings
-	((outtype^	outtype))
-      (capi.flite-process-output utterance outtype^))))
+(define* (flite-process-output {utterance flite-utterance?/alive} {outtype general-c-string?})
+  (with-general-c-strings
+      ((outtype^	outtype))
+    (capi.flite-process-output utterance outtype^)))
 
 
 ;;;; text to speech
 
-(define (flite-file-to-speech file voice outtype)
-  (define who 'flite-file-to-speech)
-  (with-arguments-validation (who)
-      ((general-c-string	file)
-       (flite-voice/alive	voice)
-       (general-c-string	outtype))
-    (with-general-c-strings
-	((file^		file)
-	 (outtype^	outtype))
-      (capi.flite-file-to-speech file^ voice outtype^))))
+(define* (flite-file-to-speech {file general-c-string?} {voice flite-voice?/alive} {outtype general-c-string?})
+  (with-general-c-strings
+      ((file^		file)
+       (outtype^	outtype))
+    (capi.flite-file-to-speech file^ voice outtype^)))
 
-(define (flite-text-to-speech text voice outtype)
-  (define who 'flite-text-to-speech)
-  (with-arguments-validation (who)
-      ((general-c-string	text)
-       (flite-voice/alive	voice)
-       (general-c-string	outtype))
-    (with-general-c-strings
-	((text^		text)
-	 (outtype^	outtype))
-      (capi.flite-text-to-speech text^ voice outtype^))))
+(define* (flite-text-to-speech {text general-c-string?} {voice flite-voice?/alive} {outtype general-c-string?})
+  (with-general-c-strings
+      ((text^		text)
+       (outtype^	outtype))
+    (capi.flite-text-to-speech text^ voice outtype^)))
 
 
 ;;;; wav files
@@ -276,26 +223,16 @@
 
 ;;;; Still to be implemented
 
-(define (flite-text-to-wave ctx)
-  (define who 'flite-text-to-wave)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-text-to-wave)))
+(define* (flite-text-to-wave ctx)
+  (capi.flite-text-to-wave))
 
-(define (flite-synth-phones ctx)
-  (define who 'flite-synth-phones)
-  (with-arguments-validation (who)
-      ()
-    (capi.flite-synth-phones)))
+(define* (flite-synth-phones ctx)
+  (capi.flite-synth-phones))
 
 
 ;;;; done
 
-#;(set-rtd-printer! (type-descriptor XML_ParsingStatus) %struct-XML_ParsingStatus-printer)
-
-#;(post-gc-hooks (cons %free-allocated-parser (post-gc-hooks)))
-
-)
+#| end of library |# )
 
 ;;; end of file
 ;; Local Variables:
