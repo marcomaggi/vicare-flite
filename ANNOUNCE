@@ -1,7 +1,7 @@
-Subject: [announce] Vicare/Flite revision 0.1d0
+Subject: [announce] Vicare/Flite revision 0.4d0
 
-			    Vicare/Flite
-			    ===============
+			      Vicare/Flite
+			      ============
 
 
 This package  is a  distribution of  C and  Scheme libraries  for Vicare
@@ -13,11 +13,11 @@ it provides bindings for the Flite C language library.
 
   The latest version of this package can be downloaded from:
 
-	 <https://sourceforge.net/projects/vicare-flite/files/>
+       <https://bitbucket.org/marcomaggi/vicare-flite/downloads>
 
 the home page of the Vicare project is at:
 
-	       <http://marcomaggi.github.com/vicare.html>
+	       <http://marcomaggi.github.io/vicare.html>
 
 development takes place at:
 
@@ -25,7 +25,7 @@ development takes place at:
 
 and as backup at:
 
-	    <https://sourceforge.net/projects/vicare-flite/>
+	    <https://bitbucket.org/marcomaggi/vicare-flite/>
 
   The last  time the author  bothered to  update this paragraph,  he had
 tested Flite version 1.4; the Flite package is available at:
@@ -33,10 +33,16 @@ tested Flite version 1.4; the Flite package is available at:
 		 <http://www.speech.cs.cmu.edu/flite/>
 
 
+Notes for revision 0.4d0
+------------------------
+
+* Started support for Vicare Scheme 0.4.
+
+
 Notes for revision 0.1d0
 ------------------------
 
-* This is a flite package.
+* This is a package.
 
 
 ### end of file

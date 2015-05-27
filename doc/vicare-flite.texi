@@ -1,7 +1,7 @@
 \input texinfo.tex
 @c %**start of header
 @setfilename vicare-flite.info
-@settitle Flite for Vicare
+@settitle Flite for Vicare Scheme
 @c %**end of header
 
 @include version.texi
@@ -33,7 +33,7 @@
 
 @c To be used as @value{COPYRIGHT_YEARS} whenever we need to include the
 @c list of copyright years.
-@set COPYRIGHT_YEARS            2013
+@set COPYRIGHT_YEARS            2013, 2015
 
 @c ------------------------------------------------------------
 
@@ -41,11 +41,12 @@
 @set FOREIGN_VERSION            1.4
 @set FOREIGN_URL                @url{http:/@//@/www.speech.cs.cmu.edu/@/flite/@/}
 @set FOREIGN_SCHEME_LIB         @library{vicare speech-tools flite}
-@set GITHUB_URL                 @url{http:/@//@/github.com/@/marcomaggi/@/vicare-flite}
-@set SOURCEFORGE_URL            @url{https:/@//@/sourceforge.net/@/projects/@/vicare-flite/@/}
-@set DOWNLOAD_URL               @url{https:/@//@/sourceforge.net/@/projects/@/vicare-flite/@/files/@/}
-@set DOCUMENTATION_URL          @url{http:/@//@/marcomaggi.github.com/@/docs/@/vicare-flite.html}
-@set VICARE_HOMEPAGE_URL        @url{http:/@//@/marcomaggi.github.com/@/vicare.html}
+@set NAUSICAA_SCHEME_LIB        @library{nausicaa speech-tools flite}
+@set GITHUB_URL                 @url{http://github.com/marcomaggi/@value{PACKAGE_NICKNAME}}
+@set BITBUCKET_URL              @url{https://bitbucket.org/marcomaggi/@value{PACKAGE_NICKNAME}}
+@set DOWNLOAD_URL               @url{https://bitbucket.org/marcomaggi/@value{PACKAGE_NICKNAME}/downloads}
+@set DOCUMENTATION_URL          @url{http://marcomaggi.github.io/docs/@value{PACKAGE_NICKNAME}.html}
+@set VICARE_HOMEPAGE_URL        @url{http://marcomaggi.github.io/vicare.html}
 
 
 @macro fliteref{NODE, TITLE}
@@ -80,7 +81,7 @@ development takes place at:
 @noindent
 and as backup at:
 
-@center @value{SOURCEFORGE_URL}
+@center @value{BITBUCKET_URL}
 
 @noindent
 @value{FOREIGN_PACKAGE} is available at:
@@ -196,7 +197,7 @@ The following Scheme libraries are installed:
 @cindex Library @library{vicare speech-tools flite}
 @cindex @library{vicare speech-tools flite}, library
 It exports one binding for some @value{FOREIGN_PACKAGE} public
-functions.  Mos of the Scheme function names are directly derived from
+functions.  Most of the Scheme function names are directly derived from
 the C function names by replacing underscore characters @samp{_} with
 dash characters @samp{-}; so @cfunc{flite_init} becomes
 @func{flite-init}.
@@ -227,25 +228,6 @@ It exports one identifier syntax binding for each @code{HAVE_} constant
 defined by the @command{configure} script, expanding to @true{} or
 @false{}.
 @end table
-
-Scheme libraries are installed under the directory:
-
-@center @file{$(libdir)/vicare-scheme}
-
-After installation, under the directory:
-
-@center @file{$(libexecdir)/@value{PACKAGE_NICKNAME}}
-
-@noindent
-a script @file{compile-all.sps} can be executed to precompile the
-installed libraries; for example:
-
-@example
-$ sudo vicare \
-   --fasl-directory /var/cache/vicare-scheme \
-   --compile-dependencies \
-      /usr/local/libexec/vicare-flite/compile-all.sps
-@end example
 
 This document contains only a brief description of the functions: refer
 to the @value{FOREIGN_PACKAGE}'s documentation for details.
@@ -782,6 +764,11 @@ speech-tools flite}.
 @chapter Nausicaa programming interface
 
 
+@quotation
+@strong{NOTE} Nausicaa support is currently on hold.  Do not use it.
+@end quotation
+
+
 @cindex Library @library{nausicaa speech-tools flite}
 @cindex @library{nausicaa speech-tools flite}, library
 
@@ -1188,7 +1175,7 @@ development takes place at:
 @noindent
 and as backup at:
 
-@center @value{SOURCEFORGE_URL}
+@center @value{BITBUCKET_URL}
 
 @noindent
 the home page of the Vicare project is at:
