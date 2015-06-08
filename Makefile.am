@@ -35,7 +35,8 @@ vicare_flite_VERSION	= $(vicare_flite_CURRENT):$(vicare_flite_REVISION):$(vicare
 lib_LTLIBRARIES			= libvicare-flite.la
 libvicare_flite_la_LDFLAGS	= -version-info $(vicare_flite_VERSION)
 libvicare_flite_la_SOURCES	= \
-	src/vicare-flite-core.c		\
+	src/vicare-flite-core.c			\
+	src/vicare-flite-imported.c		\
 	src/vicare-flite-version.c		\
 	src/vicare-flite-internals.h
 

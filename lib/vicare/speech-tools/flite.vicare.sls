@@ -73,7 +73,9 @@
     flite-text-to-wave
     flite-synth-phones
     )
-  (import (vicare)
+  (import (vicare (or (0 4 2015 5 (>= 26))
+		      (0 4 2015 (>= 6))
+		      (0 4 (>= 2016))))
     (vicare speech-tools flite constants)
     (prefix (vicare speech-tools flite unsafe-capi) capi.)
     #;(prefix (vicare ffi) ffi.)

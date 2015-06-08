@@ -25,14 +25,18 @@ LT_INIT([shared disable-static])
 
 VICARE_SCHEME
 VICARE_CHECK_LIBRARY([VICARE],
-  [(vicare (0 4 (>= 2015) (>= 5) (>= 26)))])
+  [(vicare (or (0 4 2015 5 (>= 26))
+               (0 4 2015 (>= 6))
+               (0 4 (>= 2016))))])
 AS_IF([test "$vicare_cv_schemelib_VICARE" = no],
   [AC_MSG_ERROR([wrong Vicare version],1)])
 
-VICARE_CHECK_LIBRARY([VICARE_FFI],
-  [(vicare ffi (0 4 (>= 2015) (>= 05) (>= 27)))])
-AS_IF([test "$vicare_cv_schemelib_VICARE_FFI" = no],
-  [AC_MSG_ERROR([wrong Vicare FFI library version],1)])
+dnl VICARE_CHECK_LIBRARY([VICARE_FFI],
+dnl   [(vicare ffi (or (0 4 2015 5 (>= 27))
+dnl                    (0 4 2015 (>= 6))
+dnl                    (0 4 (>= 2016))))])
+dnl AS_IF([test "$vicare_cv_schemelib_VICARE_FFI" = no],
+dnl   [AC_MSG_ERROR([wrong Vicare FFI library version],1)])
 
 # Command  line  options  for  the executable  "vicare".   The  variable
 # AX_VFLAGS is  for options preselected by  the building infrastructure.
