@@ -8,7 +8,7 @@
 ;;;
 ;;;
 ;;;
-;;;Copyright (C) 2013, 2015 Marco Maggi <marco.maggi-ipsu@poste.it>
+;;;Copyright (C) 2013, 2015, 2017 Marco Maggi <marco.maggi-ipsu@poste.it>
 ;;;
 ;;;This program is free software:  you can redistribute it and/or modify
 ;;;it under the terms of the  GNU General Public License as published by
@@ -27,9 +27,9 @@
 
 #!r6rs
 (import (vicare)
+  (prefix (vicare system structs) structs::)
   (vicare speech-tools flite)
   (vicare speech-tools flite constants)
-;;;  (prefix (vicare ffi) ffi.)
   (vicare arguments validation)
   (vicare checks))
 
@@ -65,7 +65,7 @@
 
 
 (parametrise ((check-test-name		'voice-struct)
-	      (struct-guardian-logger	#f))
+	      (structs::struct-guardian-logger	#f))
 
   (define who 'test)
 
@@ -266,7 +266,7 @@
 
 
 (parametrise ((check-test-name		'utterance-struct)
-	      (struct-guardian-logger	#f))
+	      (structs::struct-guardian-logger	#f))
 
   (define who 'test)
   (define voice (flite-voice-select))

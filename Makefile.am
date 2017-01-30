@@ -28,16 +28,16 @@ doc_vicare_flite_TEXINFOS	= doc/fdl-1.3.texi doc/gpl-3.0.texi doc/macros.texi
 AM_CFLAGS		= -I $(srcdir)/src -Wall
 
 vicare_flite_CURRENT	= @vicare_flite_VERSION_INTERFACE_CURRENT@
-vicare_flite_REVISION	= @vicare_flite_VERSION_INTERFACE_REVISION@
+vicare_flite_REVISION= @vicare_flite_VERSION_INTERFACE_REVISION@
 vicare_flite_AGE	= @vicare_flite_VERSION_INTERFACE_AGE@
 vicare_flite_VERSION	= $(vicare_flite_CURRENT):$(vicare_flite_REVISION):$(vicare_flite_AGE)
 
 lib_LTLIBRARIES			= libvicare-flite.la
 libvicare_flite_la_LDFLAGS	= -version-info $(vicare_flite_VERSION)
 libvicare_flite_la_SOURCES	= \
-	src/vicare-flite-core.c			\
-	src/vicare-flite-imported.c		\
-	src/vicare-flite-version.c		\
+	src/vicare-flite-core.c		\
+	src/vicare-flite-imported.c	\
+	src/vicare-flite-version.c	\
 	src/vicare-flite-internals.h
 
 .PHONY: vicare-c-library
@@ -87,6 +87,7 @@ VICARE_BUILD_DEPS	= \
 .PHONY: dependencies
 
 dependencies: lib/vicare/speech-tools/flite/features.vicare.sls
+	$(MKDIR_P) $(fasldir)
 	$(VICARE_BUILD_DEPS) $(slsdir)/libraries.scm >$(slsdir)/dependencies.make
 
 # NOTE This  INCLUDE directive is  processed by Automake.   To specify
@@ -109,20 +110,12 @@ clean-fasl:
 VICARE_FLITE_PLAIN_TESTS		= \
 	tests/test-vicare-flite.sps
 
-# VICARE_FLITE_NAU_TESTS		= \
-# 	tests/test-nausicaa-flite.sps
-
 TESTS	= $(VICARE_FLITE_PLAIN_TESTS)
-if WANT_NAUSICAA
-TESTS	+= $(VICARE_FLITE_NAU_TESTS)
-endif
 
 EXTRA_DIST += \
 	$(VICARE_FLITE_PLAIN_TESTS)		\
-	$(VICARE_FLITE_NAU_TESTS)		\
 	\
-	tests/demo-for-plain-documentation.sps	\
-	tests/demo-for-nausicaa-documentation.sps
+	tests/demo-for-plain-documentation.sps
 
 VICARE_SELECTED_TESTS		= $(testdir)/test-*$(file)*.sps
 VICARE_SELECTED_DEMOS		= $(testdir)/demo-*$(file)*.sps
